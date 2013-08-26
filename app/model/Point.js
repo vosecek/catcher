@@ -3,7 +3,7 @@ Ext.define('catcher.model.Point', {
     config : {
         idProperty : 'point_id',
         identifier : {
-          type: "sequential"
+          type: "uuid"
         },
         fields : [ {
             name : 'point_id',
