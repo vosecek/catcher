@@ -201,7 +201,8 @@ Ext.define('catcher.controller.MatchController', {
         var match = matches.findRecord("match_id",match_id,false,false,false,true);
         var controller = catcher.app.getController("MatchController");
         controller.fillMatchDetailContent(match.data);        
-        if(pop_level > 0)controller.getMatchesNavigation().pop(pop_level);                
+        controller.fillMatchDetailSettings(match.data);
+        if(pop_level > 0) controller.getMatchesNavigation().pop(pop_level);                
       });
       matches.getProxy().setExtraParams({});
     },    
@@ -250,14 +251,14 @@ Ext.define('catcher.controller.MatchController', {
         var point = Ext.getStore("Points").findRecord("point_id", values.pointId,false,false,false,true);
         point.set("player_id", values.scoringPlayer);
         point.set("assist_player_id", values.assistPlayer);
-        Ext.getStore("Points").sync();
-
-        // Back and reload.
-        this.getMatchesNavigation().pop();
-        var matchId = Ext.getStore("Session").findRecord("uuid", Ext.device.Device.uuid).match_id;
-        var scoringPlayer = Ext.getStore("Players").findRecord("player_id", values.scoringPlayer,false,false,false,true).data;
-        this.getScoreList().setStore(getTeamScore(matchId, scoringPlayer.team));
-        this.getScoreList().deselectAll();
+        Ext.getStore("Points").syncWithListener(function(){
+          var controller = catcher.app.getController("MatchController");
+          this.getMatchesNavigation().pop();
+          var matchId = Ext.getStore("Session").findRecord("uuid", Ext.device.Device.uuid).match_id;
+          var scoringPlayer = Ext.getStore("Players").findRecord("player_id", values.scoringPlayer,false,false,false,true).data;
+          this.getScoreList().setStore(getTeamScore(matchId, scoringPlayer.team));
+          this.getScoreList().deselectAll();
+        });
     },
 
     deletePoint : function() {
@@ -268,10 +269,11 @@ Ext.define('catcher.controller.MatchController', {
         var match_id = remove.get("match_id");
                 
         points.remove(remove);        
-        points.sync();               
-        
-        this.updateMatchPoints(match_id);
-        this.updateMatchInfo(match_id);
+        points.syncWithListener(function(){
+          var controller = catcher.app.getController("MatchController");
+          controller.updateMatchPoints(match_id);
+          controller.updateMatchInfo(match_id);
+        });                               
     },
 
     fillMatchDetailContent : function(match) {
