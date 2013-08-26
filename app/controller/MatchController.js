@@ -20,11 +20,11 @@ Ext.define('catcher.controller.MatchController', {
             },
             "matchesNavigation matchPlayerList[name=score]" : {
 //                 disclose : "showAssistPlayer",
-                select : "showAssistPlayer"
+                itemsingletap : "showAssistPlayer"
             },
             "matchesNavigation matchPlayerList[name=assist]" : {
 //                 disclose : "addPoint",
-                select : "addPoint"
+                itemsingletap : "addPoint"
             },
             "matchDetail button[name=scoreHome]" : {
                 tap : "showScore"
@@ -83,14 +83,7 @@ Ext.define('catcher.controller.MatchController', {
         Ext.getCmp("tournament").getTabBar().hide(); // skrytí hlavní navigace turnaje
         var session = getSession();
         session.match_id = match.match_id;
-        this.fillMatchDetailContent(match);
-        this.fillMatchDetailSettings(match);
-        var matchDetailScore = this.getMatchDetailScore()
-        matchDetailScore.setValues(match);
-        matchDetailScore.query("numberfield[name=score_home]")[0].setLabel("Skóre "+match.home_name_short);
-        matchDetailScore.query("numberfield[name=spirit_home]")[0].setLabel("Spirit "+match.home_name_short);
-        matchDetailScore.query("numberfield[name=score_away]")[0].setLabel("Skóre "+match.away_name_short);
-        matchDetailScore.query("numberfield[name=spirit_away]")[0].setLabel("Spirit "+match.away_name_short);
+        this.fillMatchDetailContent(match);        
     },
 
     showAddPoint : function(event) {
@@ -121,30 +114,31 @@ Ext.define('catcher.controller.MatchController', {
         });
     },
 
-    showAssistPlayer : function(list, record) {
+    showAssistPlayer : function(list, index, target, record) {
+        list.setDisableSelection(true);
         var session = getSession();
         session.score_player_id = record.data.player_id;
 
         var players = Ext.getStore("Players");
-        players.clearFilter();
-        players.filter([ {
-            filterFn : function(item) {
-                return item.get('team') == session.score_team_id;
-            }
-        } ]);
-        players.sort();
-
+//      nemusíme opět filtrovat hráče, trvá to zbytečně dlouho           
+//         players.clearFilter();
+//         players.filter([ {
+//             filterFn : function(item) {
+//                 return item.get('team') == session.score_team_id;
+//             }
+//         } ]);
+//         players.sort();
         var team = Ext.getStore("Teams").findRecord("team_id", session.score_team_id, false, false, false, true).data;
-
         this.getMatchesNavigation().push({
             xtype : "matchPlayerList",
             title : "Nahrával " + team.name_short,
             name : "assist",
             store : players
         });
+        list.setDisableSelection(false);
     },
 
-    addPoint : function(list, record) {
+    addPoint : function(list, index, target, record) {
         var session = getSession();
         var assist_player_id = record.data.player_id;
 
@@ -169,12 +163,14 @@ Ext.define('catcher.controller.MatchController', {
         if(assist_player_id == 0) session.score_player_id = 0;
 
         var point = Ext.create("catcher.model.Point", {
+            point_id: false,
             team_id : session.score_team_id,
             player_id : session.score_player_id,
             match_id : session.match_id,
             assist_player_id : assist_player_id,
             time : Math.round(+new Date()/1000)
-        });                      
+        });
+                                              
                                                             
         // přidat bod do interní DB, synchronizovat a označit jako zpracované
           point.setDirty();          
@@ -182,10 +178,10 @@ Ext.define('catcher.controller.MatchController', {
           Ext.Viewport.setMasked({
             xtype: "loadmask",
             message : "Ukládám bod na frisbee.cz"
-          });
+          });                    
           
           points.syncWithListener(function(){
-            var controller = catcher.app.getController("MatchController");            
+            var controller = catcher.app.getController("MatchController");                        
             controller.updateMatchPoints(point.get("match_id"));            
             controller.updateMatchInfo(point.get("match_id"),assist_player_id);
           });                                                                                                                                                                                                          
@@ -202,9 +198,10 @@ Ext.define('catcher.controller.MatchController', {
         var controller = catcher.app.getController("MatchController");
         controller.fillMatchDetailContent(match.data);        
         controller.fillMatchDetailSettings(match.data);
-        if(pop_level > 0) controller.getMatchesNavigation().pop(pop_level);                
-      });
-      matches.getProxy().setExtraParams({});
+        if(pop_level > 0) controller.getMatchesNavigation().pop(pop_level);
+        Ext.Viewport.setMasked(false);
+        matches.getProxy().setExtraParams({});                
+      });                  
     },    
     
     // nastavení počitadla u všech bodů konkrétního zápasu
@@ -212,9 +209,8 @@ Ext.define('catcher.controller.MatchController', {
       var points = Ext.getStore("Points");
       points.getProxy().setExtraParam("match_id",match_id);
       points.load(function(){
-        Ext.Viewport.setMasked(false);
-      });
-      points.getProxy().setExtraParams({});
+        points.getProxy().setExtraParams({});
+      });            
     },
 
     showScore : function(event) {
@@ -251,13 +247,18 @@ Ext.define('catcher.controller.MatchController', {
         var point = Ext.getStore("Points").findRecord("point_id", values.pointId,false,false,false,true);
         point.set("player_id", values.scoringPlayer);
         point.set("assist_player_id", values.assistPlayer);
+        Ext.Viewport.setMasked({
+          xtype:"loadmask",
+          message: "aktualizuji bod na frisbee.cz"
+        });
         Ext.getStore("Points").syncWithListener(function(){
-          var controller = catcher.app.getController("MatchController");
-          this.getMatchesNavigation().pop();
+          var controller = catcher.app.getController("MatchController");          
           var matchId = Ext.getStore("Session").findRecord("uuid", Ext.device.Device.uuid).match_id;
           var scoringPlayer = Ext.getStore("Players").findRecord("player_id", values.scoringPlayer,false,false,false,true).data;
-          this.getScoreList().setStore(getTeamScore(matchId, scoringPlayer.team));
-          this.getScoreList().deselectAll();
+          controller.getScoreList().setStore(getTeamScore(matchId, scoringPlayer.team));
+          controller.getScoreList().deselectAll();
+          Ext.Viewport.setMasked(false);
+          controller.getMatchesNavigation().pop();
         });
     },
 
@@ -279,6 +280,14 @@ Ext.define('catcher.controller.MatchController', {
     fillMatchDetailContent : function(match) {
         this.getMatchDetail().query("button[name=scoreHome]")[0].setText(new String(match.score_home));
         this.getMatchDetail().query("button[name=scoreAway]")[0].setText(new String(match.score_away));
+        
+        var matchDetailScore = this.getMatchDetailScore()
+        matchDetailScore.setValues(match);
+        matchDetailScore.query("numberfield[name=score_home]")[0].setLabel("Skóre "+match.home_name_short);
+        matchDetailScore.query("numberfield[name=spirit_home]")[0].setLabel("Spirit "+match.home_name_short);
+        matchDetailScore.query("numberfield[name=score_away]")[0].setLabel("Skóre "+match.away_name_short);
+        matchDetailScore.query("numberfield[name=spirit_away]")[0].setLabel("Spirit "+match.away_name_short);
+        
         getTeamScore(match.match_id,match.home_id);
         getTeamScore(match.match_id,match.away_id);
         Ext.getStore("Points").clearFilter();
