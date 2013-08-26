@@ -171,6 +171,7 @@ if($method == "DELETE"){ // budeme nìco mazat ze storu
 		
 		case "points":			      
       mysql_query("DELETE FROM mod_catcher_$store WHERE id = $data[point_id]");
+      $output["success"]="true";
       update_match($data["match_id"]);
 		break;
     
