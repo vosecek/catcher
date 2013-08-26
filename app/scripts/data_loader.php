@@ -113,6 +113,7 @@ if($method == "POST"){ // insert dat ve storu
         $output["dirty"] = true;        
       }else{
         debuguj("Pokus o pøidání duplikátu: ".json_encode($data),"catcher");
+        $output["success"] = true;
       }             
       update_match($data["match_id"]);
   	break;
@@ -151,7 +152,9 @@ if($method == "PUT"){ // update dat ve storu
 		break;
 		
 		case "points":
-			mysql_query("UPDATE mod_catcher_$store SET player_id = '$data[player_id]', assist_player_id = '$data[assist_player_id]' WHERE id = $data[point_id]");
+			mysql_query("UPDATE mod_catcher_$store SET player_id = '$data[player_id]', assist_player_id = '$data[assist_player_id]' WHERE id = '$data[point_id]'");
+      $vysledek = mysql_query("SELECT * FROM mod_catcher_$store WHERE id = '$data[point_id]'");
+      $output["sucess"] = true;
       update_match($data["match_id"]);
 		break;
 		
@@ -172,6 +175,7 @@ if($method == "DELETE"){ // budeme nìco mazat ze storu
 		case "points":			      
       mysql_query("DELETE FROM mod_catcher_$store WHERE id = $data[point_id]");
       $output["success"]="true";
+      $output["point_id"]=$data["point_id"];
       update_match($data["match_id"]);
 		break;
     
@@ -244,6 +248,7 @@ if($method == "GET"){ // stažení dat, rùzné prùbìžné aktualizaèní požadavky
           mysql_query("UPDATE mod_catcher_points SET score_home = '".$score["score_home"]["score"]."', score_away = '".$score["score_away"]["score"]."' WHERE id = '".$data["id"]."'");
           $tmp["score_home"] = $score["score_home"]["score"];        
           $tmp["score_away"] = $score["score_away"]["score"];
+          $tmp["id"] = $tmp["point_id"];
         }        
   	  	$output[] = $tmp;
   		}
