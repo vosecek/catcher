@@ -6,7 +6,8 @@ Ext.define('catcher.model.Tournament', {
 	      {name: 'tournament_id', type: 'int'},
 	      {name: 'tournament_name', type: 'string'},
         {name: 'fields', type: 'string'},
-        {name: 'time', type : 'date', dateFormat : "timestamp"}
+        {name: 'time', type : 'date', dateFormat : "timestamp"},
+        {name: 'default_length', type : 'int'}
 	  ]
 	}
 });

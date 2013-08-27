@@ -23,7 +23,8 @@ Ext.define('catcher.model.Match', {
         {name: 'time_end', type: 'date', dateFormat: "timestamp", defaultValue: 1},
         {name: 'time_start', type: 'date', dateFormat: "timestamp", defaultValue: 1},
         {name: 'length', type: 'int'},
-        {name: 'in_play', type: 'boolean'}
+        {name: 'in_play', type: 'boolean'},
+        {name: 'finished', type: 'boolean'}
 	  ]
 	}
 });

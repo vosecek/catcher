@@ -22,7 +22,7 @@ if(mysql_num_rows($vysledek) == 1 && isset($callback)){
     $output["tournament_name"] = $data["name"];
     $output["fields"] = $data["fields"];
     $output["time"] = $data["time"];
-//     $output["time"] = $data["time"];
+    $output["default_length"] = $data["default_length"];
 }else{
   $output["success"]=false;
   $output["tournament_id"]="chybné heslo či neexistují turnaj";

@@ -66,7 +66,8 @@ Ext.define("catcher.view.MatchesNavigation", {
                 formPanel.query("selectfield[name=home_id]")[0].setOptions(teams);
                 formPanel.query("selectfield[name=away_id]")[0].setOptions(teams);
                 formPanel.setValues({
-                  time:new Date()                  
+                  time:new Date(),
+                  length: tournament.get("default_length")
                 });                
                 editorPanel.show();                                                          
               }
@@ -135,11 +136,11 @@ Ext.define("catcher.view.MatchesNavigation", {
       if(show!="all"){
         store.filterBy(function(record){                    
           if(show == "past"){                            
-            if(record.get("time_end").getTime() > 0) return true;
+            if(record.get("finished") == 1) return true;
             return false;
           }
           if(show == "next"){                
-            if(record.get("time_end").getTime() == 0) return true;
+            if(record.get("finished") == 0) return true;
             return false;
           }
         });
