@@ -14,7 +14,7 @@ Ext.define('catcher.controller.MatchController', {
         control : {
             "matchesList" : {
 //                 disclose : "showMatchDetail",
-                select : "showMatchDetail",
+                itemsingletap : "showMatchDetail",
                 itemtaphold: "confirmMatchDelete",
                 itemswipe: "confirmMatchDelete"
             },
@@ -72,18 +72,19 @@ Ext.define('catcher.controller.MatchController', {
       })
     },
     
-    showMatchDetail : function(list, record) {        
+    showMatchDetail : function(list, index,target,record) {        
         var match = record.data;
+        Ext.getCmp("matchesNavigation").query("button[navigation_only=true]").forEach(function(el){el.hide()}); // skrytí filtrovacích tlačítek
         this.getMatchesNavigation().push({
             xtype : "matchDetail",
             title : match.home_name_short + " x " + match.away_name_short,
             data : match
-        });
-        Ext.getCmp("matchesNavigation").query("button[navigation_only=true]").forEach(function(el){el.hide()}); // skrytí filtrovacích tlačítek
+        });        
         Ext.getCmp("tournament").getTabBar().hide(); // skrytí hlavní navigace turnaje
         var session = getSession();
         session.match_id = match.match_id;
-        this.fillMatchDetailContent(match);        
+        this.fillMatchDetailContent(match);
+        this.fillMatchDetailSettings(match);        
     },
 
     showAddPoint : function(event) {
