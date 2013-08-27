@@ -236,7 +236,7 @@ if($method == "GET"){ // stažení dat, rùzné prùbìžné aktualizaèní požadavky
   				$data["home_name_full"] = $home["name_full"];
   				$data["away_name_short"] = $away["name_short"];
   				$data["away_name_full"] = $away["name_full"];
-          if($data["in_play"] == 0) $data["in_play"] = false;
+          if($data["in_play"] == 0) $data["in_play"] = 0;
   			}        
   			foreach($cols[$store] as $index=>$value){
   	    	$data[$value] = convert($data[$value]);          
