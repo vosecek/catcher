@@ -144,7 +144,7 @@ if($method == "PUT"){ // update dat ve storu
     break;
     
 		case "players":		
-			mysql_query("UPDATE mod_catcher_$store SET name = '$data[name]', surname = '$data[surname]', number = '$data[number]', team = $data[team], nick='$data[nick]' WHERE id = $data[player_id]");						
+			mysql_query("UPDATE mod_catcher_$store SET name = '$data[name]', surname = '$data[surname]', number = '$data[number]' nick='$data[nick]' WHERE id = $data[player_id]");						
 		break;
 		
 		case "matches":

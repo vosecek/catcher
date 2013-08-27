@@ -11,7 +11,7 @@ Ext.define("catcher.view.PlayersDetail",{
 			{
 				xtype: "fieldset",
 				title: "Informace o hráči",
-				instructions: "Nejčastěji je třeba změnit číslo hráče, pokud se liší z centrální databáze ČALD.",
+				instructions: "Zadej číslo hráče a přezdívku, nic jiného se měnit běžně nemusí. Změna se projeví i na online výsledcích!",
 				
 				items:	[
 					{
@@ -37,12 +37,6 @@ Ext.define("catcher.view.PlayersDetail",{
 						label: "Příjmení",
 						name: "surname",
 						value: ""
-					},
-					{
-						xtype: "selectfield",
-						label: "Tým",
-						name: "team",
-						options: []
 					},
 					{
 						xtype: "hiddenfield",

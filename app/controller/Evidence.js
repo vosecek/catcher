@@ -36,7 +36,6 @@ Ext.define('catcher.controller.Evidence', {
         var data = store.findRecord("player_id", values.player_id, false, false, false, true);
         data.set("name", values.name);
         data.set("surname", values.surname);
-        data.set("team", values.team);
         data.set("number", values.number);
         data.set("nick", values.nick);
         
@@ -62,14 +61,6 @@ Ext.define('catcher.controller.Evidence', {
             nick : record.raw.nick,
             number: record.raw.number
         });
-
-        // nastavit options pro select = tým
-        
-        
-        var teams = this.composeTeams();
-
-        // nastavit selected hodnoty pro Tým a Číslo hráče
-        this.getKarticka().query("selectfield[name=team]")[0].setOptions(teams).setValue(record.raw.team);
     },
     
     composeTeams: function(){
