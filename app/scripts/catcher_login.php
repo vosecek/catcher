@@ -5,17 +5,14 @@ include $path_conf."config.php";
 include $path_lib."dbconnect.php";
 include $path_lib."library.php";
 
-global $tournament, $password, $callback;
+global $tournament, $password;
 
-$tournament = $_GET["tournament"];
-$password = $_GET["password"];
-$callback = $_GET["callback"];
+$tournament = $_POST["tournament"];
+$password = $_POST["password"];
 
-$vysledek = mysql_query("select * from mod_catcher_tournaments where id = '$tournament'");
-// zatím se s heslem nebudeme párat, přihlásíme se kamkoliv a kdykoliv 
-//  and password = '$password'
+$vysledek = mysql_query("select * from mod_catcher_tournaments where id = '$tournament' AND password = '$password'");
 
-if(mysql_num_rows($vysledek) == 1 && isset($callback)){
+if(mysql_num_rows($vysledek) == 1){
 	$data = mysql_fetch_array($vysledek);
     $output["success"]=true;
     $output["tournament_id"] = $data["id"];
@@ -25,10 +22,15 @@ if(mysql_num_rows($vysledek) == 1 && isset($callback)){
     $output["default_length"] = $data["default_length"];
 }else{
   $output["success"]=false;
-  $output["tournament_id"]="chybné heslo či neexistují turnaj";
+  $output["message"]="Chybné heslo k turnaji";
 }
 
-header('Content-Type: text/javascript');
-echo $callback . '(' . json_encode($output) . ');';
+if (isset($callback)) {
+    header('Content-Type: text/javascript');
+    echo $callback . '(' . json_encode($output) . ');';
+} else {
+    header('Content-Type: application/x-json');
+    echo json_encode($output);
+}
 
 ?>
