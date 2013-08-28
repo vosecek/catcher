@@ -6,9 +6,6 @@
 
 // Custom code goes here..
 
-// Examples of using the icon mixin:
-// @include icon('user');
-
 // styl
 // $base-gradient : "matte";
 // $include-default-icons: false;
@@ -39,6 +36,7 @@
 @include icon("power_on","Q");
 @include icon("user_add","+");
 @include icon("check2","3");
+@include icon("help","?");
 
 // tlačítka
 @include sencha-button-ui('home', #B1CEDE , 'matte');

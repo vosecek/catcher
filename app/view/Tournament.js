@@ -13,7 +13,8 @@ Ext.define("catcher.view.Tournament", {
       id : "tournament",
       items : [
         {xtype : "matchesNavigation"},
-        {xtype : "teamList"}        
+        {xtype : "teamList"}        ,
+        {xtype : "helpPanel"}
       ],
       listeners:{
         initialize: function(){
