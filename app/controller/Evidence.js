@@ -90,7 +90,9 @@ Ext.define('catcher.controller.Evidence', {
                 items : new Array
             };
             data.push(team);
-            players.filter("team", radek.get("team_id"));
+            players.filterBy(function(record,id){            
+              if(record.get("team") == radek.get("team_id")) return true;
+            });
             players.sort({
               property : "nick"
             });
