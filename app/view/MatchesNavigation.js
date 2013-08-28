@@ -20,7 +20,7 @@ Ext.define("catcher.view.MatchesNavigation", {
             {
               xtype: "button",
               iconCls:"time",
-              name:"next",
+              id:"next",
               align:"left",
               filtr:true,
               navigation_only:true,
@@ -35,7 +35,7 @@ Ext.define("catcher.view.MatchesNavigation", {
             {
               xtype: "button",
               iconCls:"calendar2",
-              name:"past",
+              id:"past",
               align:"left",
               filtr:true,
               navigation_only:true,
@@ -119,10 +119,10 @@ Ext.define("catcher.view.MatchesNavigation", {
     },
     
     showInfo:function(show,msg){
-      var btn = this.query("button[filtr=true]");
-      btn.forEach(function(element){
-        if(element.name != show) element.setUi("dark");
-        if(element.name == show) element.setUi("decline");  
+      var btn = this.query("button[filtr=true]");                 
+      btn.forEach(function(element){                  
+        if(element.getId() != show) element.setUi("dark");
+        if(element.getId() == show) element.setUi("decline");
       });
       if(msg != false) {      
         Ext.Viewport.setMasked({
