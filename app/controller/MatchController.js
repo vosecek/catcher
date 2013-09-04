@@ -21,11 +21,13 @@ Ext.define('catcher.controller.MatchController', {
             },
             "matchesNavigation matchPlayerList[name=score]" : {
 //                 disclose : "showAssistPlayer",
-                itemsingletap : "showAssistPlayer"
+                itemtap : "showAssistPlayer",
+                select : "showAssistPlayer"
             },
             "matchesNavigation matchPlayerList[name=assist]" : {
 //                 disclose : "addPoint",
-                itemsingletap : "addPoint"
+                itemtap : "addPoint",
+                select : "addPoint"
             },
             "matchDetail button[name=scoreHome]" : {
                 tap : "showScore"
