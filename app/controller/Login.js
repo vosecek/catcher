@@ -49,9 +49,7 @@ Ext.define('catcher.controller.Login', {
                   Ext.getStore("Matches").setProxy({url:'http://www.frisbee.cz/catcher/app/scripts/data_loader.php?store=matches&tournament_id='+response.tournament_id}).load();
                   Ext.getStore("Points").setProxy({url:'http://www.frisbee.cz/catcher/app/scripts/data_loader.php?store=points&tournament_id='+response.tournament_id}).load();                    
                   Ext.getStore("Rosters").setProxy({url:'http://www.frisbee.cz/catcher/app/scripts/data_loader.php?store=rosters&tournament_id='+response.tournament_id});
-                  Ext.Viewport.add({
-                      xtype : "tournamentPanel"
-                  });
+                  Ext.Viewport.add({xtype : "tournamentPanel"});
                   Ext.Viewport.setActiveItem(1);
                   Ext.Viewport.setMasked(false);
                 }else{
