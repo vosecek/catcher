@@ -1,7 +1,7 @@
 Ext.define("catcher.view.MatchDetailScore",{
 	extend: "Ext.form.Panel",
 	xtype: "matchDetailScore",					
-	requires: ["Ext.form.FieldSet","Ext.form.Select","Ext.field.Hidden"],
+	requires: ["Ext.form.FieldSet","Ext.form.Select","Ext.field.Hidden","Ext.field.Toggle",],
 	
 	config:{
     title : "Skóre + spirit",
@@ -13,32 +13,38 @@ Ext.define("catcher.view.MatchDetailScore",{
 			{
 				xtype: "fieldset",
 				title: "Výsledné skóre a spirit",
-				instructions : "Spirit ve formátu kolik tým obdržel, ne kolik udělil. <br /> Výsledné skóre lze přepsat, body budou vloženy jako anonymní.",
+				instructions : "Po skončení utkání přepni Zápas skončil. <br />Spirit ve formátu kolik tým obdržel, ne kolik udělil. <br /> Výsledné skóre lze přepsat, body budou vloženy jako anonymní.",
 				
 				items:	[
+          {
+						xtype: "togglefield",
+						label: "Zápas skončil",
+						name: "finished",
+            value: 0
+					},
 					{
-						xtype: "numberfield",
+						xtype: "selectfield",
 						label: "Skóre domácí",
 						name: "score_home",
-						value: 0
+						options: []
 					},
           {
-						xtype: "numberfield",
+						xtype: "selectfield",
 						label: "Skóre hosté",
 						name: "score_away",
-						value: 0
+						options: []
 					},
           {
-						xtype: "numberfield",
+						xtype: "selectfield",
 						label: "Spirit domácí",
 						name: "spirit_home",
-						value: 0
+						options: []
 					},
           {
-						xtype: "numberfield",
+						xtype: "selectfield",
 						label: "Spirit hosté",
 						name: "spirit_away",
-						value: 0
+						options: []
 					},
 					{
 						xtype: "hiddenfield",

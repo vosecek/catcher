@@ -1,7 +1,7 @@
 Ext.define("catcher.view.MatchDetailSettings",{
 	extend: "Ext.form.Panel",
 	xtype: "matchDetailSettings",					
-	requires: ["Ext.form.FieldSet","Ext.form.Select","Ext.field.Hidden","Ext.field.DatePicker","Ext.field.Toggle","Ext.field.Number","Ext.ux.DateTimePicker"],
+	requires: ["Ext.form.FieldSet","Ext.form.Select","Ext.field.Hidden","Ext.field.DatePicker","Ext.field.Number","Ext.ux.DateTimePicker"],
 	
 	config:{
     title : "Nastavení",
@@ -13,15 +13,9 @@ Ext.define("catcher.view.MatchDetailSettings",{
 			{
 				xtype: "fieldset",
 				title: "Nastavení zápasu",
-				instructions : "U prvního výhozu přepni Čas běží, při skončení utkání přepni zpátky.",
+				instructions : "",
 				
-				items:	[
-          {
-						xtype: "togglefield",
-						label: "Čas běží",
-						name: "in_play",
-            value: 0
-					},
+				items:	[          
 					{
 						xtype: "selectfield",
 						label: "Hřiště",

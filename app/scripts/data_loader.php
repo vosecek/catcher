@@ -136,15 +136,19 @@ if($method == "PUT"){ // update dat ve storu
 	}
 	switch($store){
     case "rosters":
-      mysql_query("INSERT INTO $tab4 (player_id,subteam_id,tournament_id) VALUES ($data[player_id],$_GET[team],$tournament_id)");
-      echo mysql_error();
-      mysql_query("INSERT INTO $tab7 (player_id,team_id,tournament_id) VALUES ($data[player_id],$_GET[team],$tournament_id)");
-      echo mysql_error();
+      if(mysql_num_rows(mysql_query("SELECT player_id FROM $tab4 WHERE player_id = $data[player_id] AND subteam_id = $_GET[team] AND tournament_id = $tournament_id")) == 0){
+        mysql_query("INSERT INTO $tab4 (player_id,subteam_id,tournament_id) VALUES ($data[player_id],$_GET[team],$tournament_id)");
+        mysql_query("INSERT INTO $tab7 (player_id,team_id,tournament_id) VALUES ($data[player_id],$_GET[team],$tournament_id)");
+      }else{
+        mysql_query("UPDATE $tab4 SET toDelete = 0 WHERE player_id = $data[player_id] AND subteam_id = $_GET[team] AND tournament_id = $tournament_id");
+        mysql_query("UPDATE $tab7 SET toDelete = 0 WHERE player_id = $data[player_id] AND team_id = $_GET[team] AND tournament_id = $tournament_id");        
+      }                  
       $output["dirty"]=false;
     break;
     
-		case "players":		
-			mysql_query("UPDATE mod_catcher_$store SET name = '$data[name]', surname = '$data[surname]', number = '$data[number]' nick='$data[nick]' WHERE id = $data[player_id]");						
+		case "players":
+			mysql_query("UPDATE mod_catcher_$store SET name = '$data[name]', surname = '$data[surname]', number = '$data[number]', nick='$data[nick]' WHERE id = $data[player_id]");
+      $output["sucess"] = true;						
 		break;
 		
 		case "matches":
@@ -216,11 +220,23 @@ if($method == "GET"){ // stažení dat, rùzné prùbìžné aktualizaèní požadavky
         }
       break;
       case "players":
-        $vysledek = mysql_query("SELECT $tab2.surname,$tab2.id,$tab2.name,$tab2.number,$tab2.nick,$tab4.subteam_id AS team FROM $tab2 LEFT JOIN $tab4 ON $tab4.player_id=$tab2.id WHERE $tab4.$t_cond $skryte");        
+        mysql_query("DELETE FROM $tab4 WHERE toDelete = 1 AND $t_cond");
+        mysql_query("DELETE FROM $tab7 WHERE toDelete = 1 AND $t_cond");
+        $vysledek = mysql_query("SELECT $tab2.surname,$tab2.id,$tab2.name,$tab2.number,$tab2.nick,$tab4.subteam_id AS team FROM $tab2 LEFT JOIN $tab4 ON $tab4.player_id=$tab2.id WHERE $tab4.$t_cond $skryte");                
       break;
       case "rosters":
         $team = mysql_fetch_array(mysql_query("SELECT master FROM $tab8 WHERE id = '$_GET[team]'"));
-        $vysledek = mysql_query("SELECT $tab2.team,$tab2.surname,$tab2.id,$tab2.name,$tab2.number,$tab2.nick FROM $tab2 WHERE team = $team[master] $skryte");        
+        $result = mysql_query("SELECT $tab2.team AS master,$tab7.player_id AS id FROM $tab2 LEFT JOIN $tab7 ON $tab2.id = $tab7.player_id WHERE $tab7.team_id = '$_GET[team]'");
+        $master_teams = array();
+        $players_ids = array();
+        while($data = mysql_fetch_array($result)){
+          $players_ids[] = $data["id"];
+          if(!in_array($data["master"], $master_teams)) $master_teams[] = $data["master"];
+        }        
+        unset($master_teams[array_search($team["master"],$master_teams)]);
+        $players_ids = implode(",",$players_ids);
+        $vysledek = mysql_query("SELECT $tab2.team,$tab2.surname,$tab2.id,$tab2.name,$tab2.number,$tab2.nick FROM $tab2 WHERE team = $team[master] $skryte");
+        $vysledek2 = mysql_query("SELECT $tab2.team,$tab2.surname,$tab2.id,$tab2.name,$tab2.number,$tab2.nick FROM $tab2 WHERE $tab2.id IN ($players_ids) $skryte");        
       break;
       case "tournaments":
         $vysledek = mysql_query("SELECT * FROM mod_catcher_tournaments WHERE active=1 ORDER BY name");
@@ -253,6 +269,19 @@ if($method == "GET"){ // stažení dat, rùzné prùbìžné aktualizaèní požadavky
         }        
   	  	$output[] = $tmp;
   		}
+    }
+    
+    if(isset($vysledek2)){
+      while($data = mysql_fetch_array($vysledek2)){        
+        foreach($cols[$store] as $index=>$value){
+  	    	$data[$value] = convert($data[$value]);          
+  	    	$tmp[$index] = $data[$value];
+  	  	}
+        if($store == "rosters"){
+          $tmp["team"] = $team["master"];
+        }
+        $output[] = $tmp;
+      }
     }
 	}					
 }
