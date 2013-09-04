@@ -39,7 +39,7 @@ if(isset($_REQUEST['callback'])) $callback = $_REQUEST['callback'];
 $cols["tournaments"] = array("tournament_id"=>"id","tournament_name"=>"name","fields"=>"fields","time"=>"time","default_length"=>"default_length");
 $cols["teams"] = array("team_id"=>"id","name_short"=>"name_short","name_full"=>"name_full","master_id"=>"master");
 $cols["players"] = array("player_id"=>"id","name"=>"name","surname"=>"surname","number"=>"number","team"=>"team","nick"=>"nick");
-$cols["matches"] = array("match_id"=>"id","tournament_id"=>"tournament_id","home_id"=>"home_id","home_name_full"=>"home_name_full","home_name_short"=>"home_name_short","away_name_full"=>"away_name_full","away_name_short"=>"away_name_short","away_id"=>"away_id","score_home"=>"score_home","score_away"=>"score_away","spirit_home"=>"spirit_home","spirit_away"=>"spirit_away","field"=>"field","time"=>"time","time_start"=>"time_start","time_end"=>"time_end","length"=>"length","in_play"=>"in_play","finished"=>"finished");
+$cols["matches"] = array("match_id"=>"id","tournament_id"=>"tournament_id","home_id"=>"home_id","home_name_full"=>"home_name_full","home_name_short"=>"home_name_short","away_name_full"=>"away_name_full","away_name_short"=>"away_name_short","away_id"=>"away_id","score_home"=>"score_home","score_away"=>"score_away","spirit_home"=>"spirit_home","spirit_away"=>"spirit_away","field"=>"field","time"=>"time","time_end"=>"time_end","length"=>"length","in_play"=>"in_play","finished"=>"finished");
 $cols["points"] = array("point_id"=>"id","team_id"=>"team_id","player_id"=>"player_id","assist_player_id"=>"assist_player_id","match_id"=>"match_id","time"=>"time");
 $cols["rosters"] = $cols["players"];
 
@@ -50,18 +50,17 @@ $cols_app["points"]["point_id"] = "point_id";
 
 function update_match_settings($data){
   global $tab5,$output;
-  $time = time();
-  switch($data["in_play"]){
+  $time = time();  
+  switch($data["finished"]){
     case 0:
-      mysql_query("UPDATE $tab5 SET finished = IF((time_start>0 AND in_play=1),1,0), time_end = IF((time_start>0 AND in_play=1),$time,time_end), in_play = 0 WHERE id = $data[match_id]");       
+      mysql_query("UPDATE $tab5 SET finished = 0, time_end=0 WHERE id = $data[match_id]");       
     break;
     case 1:
-      mysql_query("UPDATE $tab5 SET time_start = IF(time_start=0,$time,time_start), time_end = 0, in_play = 1 WHERE id = $data[match_id]");
+      mysql_query("UPDATE $tab5 SET time_end = IF(finished>0,time_end,$time), finished = 1, in_play = 0 WHERE id = $data[match_id]");
     break;
   } 
   mysql_query("UPDATE $tab5 SET field = '$data[field]', length = '$data[length]', time = '$data[time]', spirit_away = '$data[spirit_away]', spirit_home = '$data[spirit_home]' WHERE id = $data[match_id]");   
-  $result = mysql_fetch_array(mysql_query("SELECT in_play,time_start,time_end,finished FROM $tab5 WHERE id = $data[match_id]"));
-  $output["time_start"] = $result["time_start"]; 
+  $result = mysql_fetch_array(mysql_query("SELECT in_play,time_end,finished FROM $tab5 WHERE id = $data[match_id]")); 
   $output["time_end"] = $result["time_end"];  
   $output["in_play"] = $result["in_play"];
   $output["finished"] = $result["finished"];
@@ -81,11 +80,15 @@ function update_match($match_id = false){
   }  
   
   foreach($matchesToUpdate as $match_id){    
-    $data = mysql_fetch_array(mysql_query("SELECT home_id, away_id FROM mod_catcher_matches WHERE id='$match_id'"));
+    $data = mysql_fetch_array(mysql_query("SELECT home_id, away_id, in_play FROM mod_catcher_matches WHERE id='$match_id'"));
     $score_home = mysql_fetch_array(mysql_query("SELECT count(id) as score FROM mod_catcher_points WHERE match_id = '$match_id' AND team_id='$data[home_id]'"));
     $score_away = mysql_fetch_array(mysql_query("SELECT count(id) as score FROM mod_catcher_points WHERE match_id = $match_id AND team_id='$data[away_id]'"));    
     
     mysql_query("UPDATE mod_catcher_matches SET score_home = '$score_home[score]', score_away = '$score_away[score]' WHERE id = $match_id");
+    debuguj(($score_home["score"]+$score_away["score"])." - ".$data["in_play"],"catcher");
+    if(($score_home["score"]+$score_away["score"])>0 && $data["in_play"] == 0){    
+      mysql_query("UPDATE mod_catcher_matches SET in_play = 1 WHERE id = $match_id");
+    }
   }
 }
  
