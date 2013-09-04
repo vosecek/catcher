@@ -27,7 +27,7 @@ Ext.application({
     ],
 
     views : [ "Main", "Login", "About", "Tournament", "MatchesNavigation", "TeamList","MatchDetailCounter","MatchDetailSettings","MatchDetailScore","EditorPanel","HelpPanel","TeamRoster","ModalPanel"],
-    stores : [ "Tournaments", "Matches", "Session", "Teams", "Players", "Evidence", "Points","Rosters" ],
+    stores : [ "Tournaments", "Matches", "Session", "Teams", "Players", "Evidence", "Points","Rosters","MatchPlayerListScore","MatchPlayerListAssist"],
     models : [ "Tournament", "Match", "Session", "Team", "Player", "Evidence", "Point","Roster" ],
     controllers : [ "Login", "Evidence", "MatchController"],
 
