@@ -10,7 +10,8 @@ global $tournament, $password;
 $tournament = $_POST["tournament"];
 $password = $_POST["password"];
 
-$vysledek = mysql_query("select * from mod_catcher_tournaments where id = '$tournament' AND password = '$password'");
+$vysledek = mysql_query("select * from mod_catcher_tournaments where id = '$tournament'");
+//  AND password = '$password'
 
 if(mysql_num_rows($vysledek) == 1){
 	$data = mysql_fetch_array($vysledek);

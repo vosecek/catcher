@@ -1,6 +1,7 @@
 Ext.define("catcher.view.Login", {
     extend : "Ext.form.Panel",
     xtype : "loginPanel",
+    id: "loginPanel",
     requires : [ "Ext.form.FieldSet", "Ext.form.Select", "Ext.form.Password", "Ext.Object", "Ext.Array", "Ext.device.Device", "Ext.data.Model", "Ext.data.Store" ],
 
     config : {
@@ -11,7 +12,7 @@ Ext.define("catcher.view.Login", {
         items : [ {
             xtype : "fieldset",
             title : "Přihlášení k turnaji",
-            instructions : "Vyberte jeden z aktuálních turnajů, zatím free access",
+            instructions : "Vyberte jeden z aktuálních turnajů",
             items : [ {
                 xtype : "selectfield",
                 displayField : "text",
@@ -29,20 +30,21 @@ Ext.define("catcher.view.Login", {
             xtype : "button",
             text : "Přihlásit",
             ui : "confirm"
-        } ]
-    },
-
-    // vložení možností do Selectu
-    initialize : function() {
-        var options = new Array();
-        var store = Ext.getStore("Tournaments").load(function(records) {
-            store.each(function(radek) {
-                options.push({
-                    text : radek.get("tournament_name"),
-                    value : radek.get("tournament_id")
-                });
-            });
-            Ext.getCmp("turnaj").setOptions(options);
-        });
-    }
+        } ],
+        listeners:{
+          // vložení možností do Selectu
+          painted : function() {
+              var options = new Array();
+              var store = Ext.getStore("Tournaments").load(function(records) {
+                  store.each(function(radek) {
+                      options.push({
+                          text : radek.get("tournament_name"),
+                          value : radek.get("tournament_id")
+                      });
+                  });
+                  Ext.getCmp("turnaj").setOptions(options);
+              });
+          }
+        }      
+    },          
 });
