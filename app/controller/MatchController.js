@@ -21,13 +21,13 @@ Ext.define('catcher.controller.MatchController', {
             },
             "matchesNavigation matchPlayerList[name=score]" : {
 //                 disclose : "showAssistPlayer",
-                itemtap : "showAssistPlayer",
-                select: "showAssistPlayer"
+                itemsingletap : "showAssistPlayer"
+//                 select: "showAssistPlayer"
             },
             "matchesNavigation matchPlayerList[name=assist]" : {
 //                 disclose : "addPoint",
-                itemtap : "addPoint",
-                select: "addPoint"
+                itemsingletap : "addPoint"
+//                 select: "addPoint"
             },
             "matchDetail button[name=scoreHome]" : {
                 tap : "showScore"
@@ -142,8 +142,9 @@ Ext.define('catcher.controller.MatchController', {
     showAssistPlayer : function(list, index, target, record) {
         list.setDisableSelection(true);
         var session = getSession();
-
-        session.score_player_id = record.data.player_id;
+//         console.log(record);
+//         console.log(list);
+        session.score_player_id = record.data.player_id;        
         
         var MatchPlayerListAssist = Ext.getStore("MatchPlayerListAssist");                                                            
         
