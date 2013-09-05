@@ -6,7 +6,8 @@ Ext.define('catcher.store.Players', {
         storeId : 'Players',
         proxy : {
             type : 'rest',
-            url : 'http://www.frisbee.cz/catcher/app/scripts/data_loader.php?store=players&'
+            url : 'http://www.frisbee.cz/catcher/app/scripts/data_loader.php?store=players&',
+            appendId: false
         },
         sorters: 'nick',
         autoLoad : false

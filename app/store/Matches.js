@@ -6,7 +6,8 @@ Ext.define('catcher.store.Matches', {
         storeId : 'Matches',
         proxy : {
             type : 'rest',
-            url : 'http://www.frisbee.cz/catcher/app/scripts/data_loader.php?store=matches&'
+            url : 'http://www.frisbee.cz/catcher/app/scripts/data_loader.php?store=matches&',
+            appendId: false
         },
         sorters : {
             property : "time",

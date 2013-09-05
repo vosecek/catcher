@@ -6,7 +6,8 @@ Ext.define('catcher.store.Tournaments', {
         storeId : 'Tournaments',
         proxy : {
             type : 'jsonp',
-            url : 'http://www.frisbee.cz/catcher/app/scripts/data_loader.php?store=tournaments'
+            url : 'http://www.frisbee.cz/catcher/app/scripts/data_loader.php?store=tournaments',
+            appendId: false
         },
         autoLoad : true
     }
