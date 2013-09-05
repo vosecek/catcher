@@ -52,7 +52,7 @@ Ext.define('catcher.controller.MatchController', {
                 tap: "updateMatchSettings"
             },
             "matchDetailScore button[name=submit]":{
-                tap: "updateMatchSettings"
+                tap: "updateMatchScore"
             }
         },
         listeners: {
@@ -381,19 +381,16 @@ Ext.define('catcher.controller.MatchController', {
         });         
       }
       return options;
-    },        
+    },
     
-    updateMatchSettings : function(){
+    updateMatchScore : function(){
       Ext.Viewport.setMasked({
           xtype : 'loadmask',
           message : 'Ukládám informace o zápase'
-      });      
+      });
       
-      if(Ext.getCmp("matchDetailSettings").isPainted()) var form = this.getMatchDetailSettings();
-      if(Ext.getCmp("matchDetailScore").isPainted()) var form = this.getMatchDetailScore();
-      
+      var form = this.getMatchDetailScore();
       values = form.getValues(true, true);
-            
       
       var matches = Ext.getStore("Matches");
       var match = matches.findRecord("match_id",values.match_id,false,false,true);
@@ -453,7 +450,22 @@ Ext.define('catcher.controller.MatchController', {
         }else{
           Ext.Viewport.setMasked(false);
         }
-      });            
+      });
+    },        
+    
+    updateMatchSettings : function(){
+      Ext.Viewport.setMasked({
+          xtype : 'loadmask',
+          message : 'Ukládám informace o zápase'
+      });      
+      
+      var form = this.getMatchDetailSettings();            
+      values = form.getValues(true, true);
+      
+      var matches = Ext.getStore("Matches");
+      var match = matches.findRecord("match_id",values.match_id,false,false,true);
+      
+      saveMatchSettings(match,values);                                                
     }
 });
 
