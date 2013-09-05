@@ -29,6 +29,10 @@ Ext.define('catcher.model.Point', {
             name : 'score_away',
             type : 'int'
         }, {
+        }, {
+            name : 'anonymous',
+            type : 'boolean'
+        }, {
             name : 'time',
             type : 'date',
             dateFormat : "timestamp"

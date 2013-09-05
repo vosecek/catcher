@@ -60,9 +60,11 @@ Ext.define("catcher.view.MatchesNavigation", {
                 var formPanel = Ext.getCmp('editorPanel');
                 var tournament_id = Ext.getStore("Session").findRecord("uuid", Ext.device.Device.uuid).get("tournament_id");                
                 var tournament = Ext.getStore("Tournaments").findRecord("tournament_id",tournament_id,false,false,true);
-                var fields2push = catcher.app.getController("MatchController").composeFields(tournament.get("fields"));
+                var fields2push = catcher.app.getController("MatchController").composeSelect(tournament.get("fields"));
+                var skupiny2push = catcher.app.getController("MatchController").composeSelect(tournament.get("skupiny"));
                 var teams = catcher.app.getController("Evidence").composeTeams();
                 formPanel.query("selectfield[name=field]")[0].setOptions(fields2push);
+                formPanel.query("selectfield[name=skupina]")[0].setOptions(skupiny2push);
                 formPanel.query("selectfield[name=home_id]")[0].setOptions(teams);
                 formPanel.query("selectfield[name=away_id]")[0].setOptions(teams);
                 formPanel.setValues({

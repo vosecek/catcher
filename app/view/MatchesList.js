@@ -17,9 +17,9 @@ Ext.define("catcher.view.MatchesList", {
         listeners : {
             painted : function() {
 //             force reload asi není zcela nutný, zbytečné prodlužování práce              
-//                 var store = Ext.getStore("Matches");
+                var store = Ext.getStore("Matches");
 //                 store.getProxy().setExtraParams({});
-//                 store.clearFilter();
+                store.clearFilter();
 //                 store.load(function(){
 //                   var session = Ext.getStore("Session").findRecord("uuid", Ext.device.Device.uuid);                
 //                   store.filter("tournament_id", session.get("tournament_id")*1);

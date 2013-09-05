@@ -24,6 +24,7 @@ Ext.define('catcher.model.Match', {
 //         {name: 'time_start', type: 'date', dateFormat: "timestamp", defaultValue: 1},
         {name: 'length', type: 'int'},
         {name: 'in_play', type: 'boolean'},
+        {name: 'skupina', type: 'string'},
         {name: 'finished', type: 'boolean'}
 	  ]
 	}

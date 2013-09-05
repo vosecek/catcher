@@ -23,6 +23,12 @@ Ext.define("catcher.view.MatchDetailSettings",{
 						options: []
 					},
           {
+						xtype: "selectfield",
+						label: "Skupina",
+						name: "skupina",
+						options: []
+					},
+          {
 						xtype: "numberfield",
 						label: "Délka utkání [min]",
 						name: "length"

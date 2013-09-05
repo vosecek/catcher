@@ -35,6 +35,12 @@ Ext.define("catcher.view.EditorPanel",{
 						name: "field",
 						options: []
 					},{
+          },{
+						xtype: "selectfield",
+						label: "Skupina",
+						name: "skupina",
+						options: []
+					},{
 						xtype: "numberfield",
 						label: "Délka utkání [min]",
 						name: "length"
