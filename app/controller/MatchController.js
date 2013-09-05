@@ -22,12 +22,12 @@ Ext.define('catcher.controller.MatchController', {
             "matchesNavigation matchPlayerList[name=score]" : {
 //                 disclose : "showAssistPlayer",
                 itemtap : "showAssistPlayer",
-                select : "showAssistPlayer"
+                select: "showAssistPlayer"
             },
             "matchesNavigation matchPlayerList[name=assist]" : {
 //                 disclose : "addPoint",
                 itemtap : "addPoint",
-                select : "addPoint"
+                select: "addPoint"
             },
             "matchDetail button[name=scoreHome]" : {
                 tap : "showScore"
@@ -202,7 +202,8 @@ Ext.define('catcher.controller.MatchController', {
             player_id : session.score_player_id,
             match_id : session.match_id,
             assist_player_id : assist_player_id,
-            time : Math.round(+new Date()/1000)
+            time : Math.round(+new Date()/1000),
+            anonymous : false
         });
                                               
                                                             
@@ -349,23 +350,37 @@ Ext.define('catcher.controller.MatchController', {
       this.getMatchDetailSettings().setValues(match);            
       var session = getSession();
       var tournament_data = Ext.getStore("Tournaments").findRecord("tournament_id",session.get("tournament_id"),false,false,true);
-      var fields2push = this.composeFields(tournament_data.get("fields"));      
+      var fields2push = this.composeSelect(tournament_data.get("fields"));      
+      var skupiny2push = this.composeSelect(tournament_data.get("skupiny"),"skupina");
       this.getMatchDetailSettings().query("selectfield[name=field]")[0].setOptions(fields2push).setValue(match.field);            
+      this.getMatchDetailSettings().query("selectfield[name=skupina]")[0].setOptions(skupiny2push).setValue(match.skupina);
     },
     
-    composeFields:function(input){
-      var fields = input.split("*");
-      var length = fields.length,
+    composeSelect:function(input,type){
+      if(typeof type == "undefined") type = "fields"; 
+      var data = input.split("*");
+      var length = data.length,
       element = null;
-      var fields2push = new Array();
+      var options = new Array();
+      var typy_skupin = new Array;
+      typy_skupin["PO#Q"]="Čtvrtfinále";
+      typy_skupin["PO#LQ"]="Křížový zápas 5-8. místo";
+      typy_skupin["PO#WLQ"]="O 5. místo";
+      typy_skupin["PO#LLQ"]="O 7. místo";
+      typy_skupin["PO#S"]="Semifinále";
+      typy_skupin["PO#LS"]="O 3. místo";
+      typy_skupin["PO#F"]="Finále";            
       for (var i = 0; i < length; i++) {
-        element = fields[i];
-        fields2push.push({
-          text:element,
+        element = data[i];
+        var element2 = element;
+        if(type == "skupina") element2 = typy_skupin[element];
+        if(typeof element2 == "undefined") element2 = element;
+        options.push({
+          text:element2,
           value:element
         });         
       }
-      return fields2push;
+      return options;
     },        
     
     updateMatchSettings : function(){
@@ -394,7 +409,7 @@ Ext.define('catcher.controller.MatchController', {
         if(values.score_away > match.get("score_away")) diffs.push("Skóre "+match.get("away_name_short")+" je větší než počet uložených bodů ("+match.get("score_away")+"), při uložení dojde k vygenerování anonymních bodů. Opravdu?"); 
       }
       
-      Ext.Msg.confirm("Zadávaný výsledek",match.get("home_name_short")+" vs. "+match.get("away_name_short")+": "+match.get("score_home")+":"+match.get("score_away"),function(response){
+      Ext.Msg.confirm("Zadávaný výsledek",match.get("home_name_short")+" vs. "+match.get("away_name_short")+": "+values.score_home+":"+values.score_away,function(response){
         if(response == "yes"){                       
           if(diffs_fatal.length > 0){
             Ext.Msg.alert("Chybné skóre",diffs_fatal.join("<br />"));
@@ -411,12 +426,14 @@ Ext.define('catcher.controller.MatchController', {
                           player_id : 0,
                           match_id : match.get("match_id"),
                           assist_player_id : 0,
-                          time : Math.round(+new Date()/1000)+i
+                          time : Math.round(+new Date()/1000)+i,
+                          anonymous: true
                       });
                       points.add(equalizer);                
                       i++;
                     }                
                   }
+                  
                   if(values.score_home > match.get("score_home")) equalizer((values.score_home-match.get("score_home")),match.get("home_id"));
                   if(values.score_away > match.get("score_away")) equalizer((values.score_away-match.get("score_away")),match.get("away_id"));
                   points.syncWithListener(function(){
