@@ -16,7 +16,7 @@ Ext.define('catcher.controller.MatchController', {
             "matchesList" : {
 //                 disclose : "showMatchDetail",
                 itemsingletap : "showMatchDetail",
-                itemtaphold: "confirmMatchDelete",
+//                 itemtaphold: "confirmMatchDelete",
                 itemswipe: "confirmMatchDelete"
             },
             "matchesNavigation matchPlayerList[name=score]" : {
@@ -75,15 +75,15 @@ Ext.define('catcher.controller.MatchController', {
       })
     },
     
-    showMatchDetail : function(list, index,target,record) {        
+    showMatchDetail : function(list, index,target,record) {      
+        Ext.getCmp("tournament").getTabBar().hide(); // skrytí hlavní navigace turnaje        
         var match = record.data;
-        Ext.getCmp("matchesNavigation").query("button[navigation_only=true]").forEach(function(el){el.hide()}); // skrytí filtrovacích tlačítek
+        Ext.getCmp("matchesNavigation").query("button[navigation_only=true]").forEach(function(el){el.hide()}); // skrytí filtrovacích tlačítek 
         this.getMatchesNavigation().push({
             xtype : "matchDetail",
             title : match.home_name_short + " x " + match.away_name_short,
             data : match
-        });        
-        Ext.getCmp("tournament").getTabBar().hide(); // skrytí hlavní navigace turnaje
+        });                        
         var session = getSession();
         session.match_id = match.match_id;
         this.fillMatchDetailContent(match);
@@ -142,8 +142,7 @@ Ext.define('catcher.controller.MatchController', {
     showAssistPlayer : function(list, index, target, record) {
         list.setDisableSelection(true);
         var session = getSession();
-//         console.log(record);
-//         console.log(list);
+
         session.score_player_id = record.data.player_id;        
         
         var MatchPlayerListAssist = Ext.getStore("MatchPlayerListAssist");                                                            
@@ -225,10 +224,11 @@ Ext.define('catcher.controller.MatchController', {
     
     updateMatchInfo : function(match_id,pop_level){
       pop_level = typeof pop_level !== 'undefined' ? pop_level : 2;            
-      var matches = Ext.getStore("Matches");
+      var matches = Ext.getStore("Matches");      
       matches.getProxy().setExtraParam("id",match_id);
-      matches.load(function(){
-        var match = matches.findRecord("match_id",match_id,false,false,false,true);
+      var match = matches.findRecord("match_id",match_id,false,false,false,true);
+      match.setDirty(true);
+      matches.syncWithListener(function(){                
         var controller = catcher.app.getController("MatchController");
         controller.fillMatchDetailContent(match.data);        
         controller.fillMatchDetailSettings(match.data);
@@ -351,7 +351,7 @@ Ext.define('catcher.controller.MatchController', {
       this.getMatchDetailSettings().setValues(match);            
       var session = getSession();
       var tournament_data = Ext.getStore("Tournaments").findRecord("tournament_id",session.get("tournament_id"),false,false,true);
-      var fields2push = this.composeSelect(tournament_data.get("fields"));      
+      var fields2push = this.composeSelect(tournament_data.get("fields"),"fields");      
       var skupiny2push = this.composeSelect(tournament_data.get("skupiny"),"skupina");
       this.getMatchDetailSettings().query("selectfield[name=field]")[0].setOptions(fields2push).setValue(match.field);            
       this.getMatchDetailSettings().query("selectfield[name=skupina]")[0].setOptions(skupiny2push).setValue(match.skupina);
@@ -359,26 +359,25 @@ Ext.define('catcher.controller.MatchController', {
     
     composeSelect:function(input,type){
       if(typeof type == "undefined") type = "fields"; 
-      var data = input.split("*");
-      var length = data.length,
-      element = null;
       var options = new Array();
-      var typy_skupin = new Array;
-      typy_skupin["PO#Q"]="Čtvrtfinále";
-      typy_skupin["PO#LQ"]="Křížový zápas 5-8. místo";
-      typy_skupin["PO#WLQ"]="O 5. místo";
-      typy_skupin["PO#LLQ"]="O 7. místo";
-      typy_skupin["PO#S"]="Semifinále";
-      typy_skupin["PO#LS"]="O 3. místo";
-      typy_skupin["PO#F"]="Finále";            
-      for (var i = 0; i < length; i++) {
-        element = data[i];
-        var element2 = element;
-        if(type == "skupina") element2 = typy_skupin[element];
-        if(typeof element2 == "undefined") element2 = element;
+      
+      source_data = input.split("*");
+      
+      var data = new Array;        
+      var tmp = new Array;
+      for(var i = 0;i < source_data.length;i++){        
+        tmp = source_data[i].split("#");          
+        if(tmp.length > 1){ 
+          data[tmp[0]+"#"+tmp[1]] = tmp[1];
+        }else{
+          data[source_data[i]] = source_data[i];
+        } 
+      }                                  
+                  
+      for (key in data) {        
         options.push({
-          text:element2,
-          value:element
+          text:data[key],
+          value:key
         });         
       }
       return options;
@@ -461,7 +460,7 @@ Ext.define('catcher.controller.MatchController', {
       });      
       
       var form = this.getMatchDetailSettings();            
-      values = form.getValues(true, true);
+      values = form.getValues(true, true);      
       
       var matches = Ext.getStore("Matches");
       var match = matches.findRecord("match_id",values.match_id,false,false,true);
