@@ -25,10 +25,10 @@ Ext.define("catcher.view.HelpPanel",{
 		html: [      
 "<strong>Jak skórovat zápas</strong>",
 "<ul>",
-"<li>Na začátku každého zápasu nejdříve v Nastavení přepnout \"čas běží\"</li>",
 "<li>Postupně zapisovat body přes asistující a skórující hráče</li>",
+"<li>Lze přidat anonymní bod, pokud není jisté, kdo se účastnil bodu, ze statistických důvodů je ale lepší dávat pozor na hru a psát to reálně :-)</li>",
 "<li>Tapnutím na skóre je možné vypsat již zadané body daného týmu a lze je upravit či smazat",
-"<li>Po konci zápasu v sekci Nastavení vypnout \"čas běží\", je možné zadat kdykoliv později Spirit",
+"<li>Po konci zápasu v sekci Nastavení přepnout \"Zápas skončil\", je možné zadat kdykoliv později Spirit",
 "<li>Není nutné skórovat každý bod, v sekci Skóre a spirit lze natvrdo zadat skóre vyšší, než je zadané. Body se vygenerují jako anonymní a následně lze pokračovat",
 "</ul>",
 "<strong>Chybějící zápasy</strong>",
