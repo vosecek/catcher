@@ -7,9 +7,13 @@ Ext.define("catcher.view.MatchDetail", {
       styleHtmlContent : true,
       tabBarPosition : "bottom",
         items:[
-          {xtype: "matchDetailCounter"},
-          {xtype: "matchDetailSettings"},
-          {xtype: "matchDetailScore"}
-        ]      
+          {xtype: "matchDetailCounter"}          
+        ],
+       listeners:{
+        initialize:function(){
+          this.add({xtype:"matchDetailSettings"});
+          this.add({xtype:"matchDetailScore"});
+        }
+       }             
     }
 });

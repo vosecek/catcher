@@ -60,10 +60,13 @@ function update_match_settings($data){
     break;
   } 
   mysql_query("UPDATE $tab5 SET skupina='$data[skupina]', field = '$data[field]', length = '$data[length]', time = '$data[time]', spirit_away = '$data[spirit_away]', spirit_home = '$data[spirit_home]' WHERE id = $data[match_id]");   
-  $result = mysql_fetch_array(mysql_query("SELECT in_play,time_end,finished FROM $tab5 WHERE id = $data[match_id]")); 
+  $result = mysql_fetch_array(mysql_query("SELECT score_home, score_away,in_play,time_end,finished FROM $tab5 WHERE id = $data[match_id]")); 
   $output["time_end"] = $result["time_end"];  
   $output["in_play"] = $result["in_play"];
   $output["finished"] = $result["finished"];
+  $output["score_home"] = $result["score_home"];
+  $output["score_away"] = $result["score_away"];
+  $output["dirty"] = false;
 }
 
 // pokud $match_id = false, updatuje se celý turnaj
@@ -118,8 +121,10 @@ if($method == "POST"){ // insert dat ve storu
       }else{
         debuguj("Pokus o pøidání duplikátu: ".json_encode($data),"catcher");
         $output["success"] = true;
-      }             
-      update_match($data["match_id"]);
+      }
+//       update_match se provede pomocí syncWithListener             
+//       update_match($data["match_id"]);
+
   	break;
     case "players":
       $master_team = mysql_fetch_array(mysql_query("SELECT master FROM $tab8 WHERE id=$data[team]"));
