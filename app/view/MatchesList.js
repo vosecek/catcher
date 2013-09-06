@@ -17,7 +17,7 @@ Ext.define("catcher.view.MatchesList", {
         listeners : {
             painted : function() {
 //             force reload asi není zcela nutný, zbytečné prodlužování práce              
-                var store = Ext.getStore("Matches");
+                var store = this.getStore();
 //                 store.getProxy().setExtraParams({});
                 store.clearFilter();
 //                 store.load(function(){
@@ -25,11 +25,7 @@ Ext.define("catcher.view.MatchesList", {
 //                   store.filter("tournament_id", session.get("tournament_id")*1);
 //                 });
                 // při zobrazení seznamu zápasů zobraz dle nastaveného filtru
-                Ext.getCmp("matchesNavigation").query("button[navigation_only=true]").forEach(function(el) {el.show()});
-                Ext.getCmp("matchesNavigation").query("button[filtr=true]").forEach(function(el){
-                    if(el.getUi() == "decline") el.up("navigationview").showInfo(el.getId(),false);                    
-                  }
-                );                
+                Ext.getCmp("matchesNavigation").query("button[navigation_only=true]").forEach(function(el) {el.show()});              
                 Ext.getCmp("tournament").getTabBar().show();
                 Ext.getCmp("matchesList").deselectAll();
             }

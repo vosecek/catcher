@@ -13,7 +13,7 @@ Ext.define("catcher.view.Tournament", {
       id : "tournament",
       items : [
         {xtype : "matchesNavigation"},
-        {xtype : "teamList"}        ,
+        {xtype : "teamList"},
         {xtype : "helpPanel"}
       ],
       listeners:{
@@ -28,7 +28,8 @@ Ext.define("catcher.view.Tournament", {
 //             margin: "10 0 0 0",
 //             handler : function() {
 //               Ext.Msg.confirm("Odhlášení", "Opravdu se chcete odhlásit?", function(response) {
-//                   if (response == "yes") {                
+//                   if (response == "yes") {
+//                     window.location.reload();                
 //                       var store = Ext.getStore("Session");
 //                       store.remove(store.findRecord("uuid",Ext.device.Device.uuid));
 //                       Ext.getStore("Matches").removeAll();
@@ -43,7 +44,7 @@ Ext.define("catcher.view.Tournament", {
 //                   }
 //               });
 //             }        
-          }
+//           }
 //           ,{
 //             xtype:"button",
 //             id:"help",
@@ -63,7 +64,7 @@ Ext.define("catcher.view.Tournament", {
 //             }
 //           }
 //           );
-//         }
+        }
       }
     }
 });

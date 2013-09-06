@@ -1,12 +1,11 @@
 Ext.define("catcher.view.MatchesNavigation", {
     extend : "Ext.navigation.View",
     xtype : "matchesNavigation",
-    requires : [ "catcher.view.MatchDetail", "catcher.view.MatchesList", "catcher.view.AddPointDetail", "catcher.view.ScoreList", "catcher.view.MatchPlayerList", "catcher.view.EditorPanel"],
+    id : "matchesNavigation",
+    requires : [ "catcher.view.MatchDetail", "catcher.view.MatchesList", "catcher.view.AddPointDetail", "catcher.view.ScoreList", "catcher.view.MatchPlayerList", "catcher.view.EditorPanel","Ext.ActionSheet"],
     config : {
         title : "Zápasy",
-        iconCls : "list",
-        id : "matchesNavigation",
-
+        iconCls : "list",        
         items : [ {
             xtype : 'matchesList'
         } ],
@@ -16,62 +15,93 @@ Ext.define("catcher.view.MatchesNavigation", {
             defaults: {
                 iconMask: true
             },
-            items : [ 
+            items : [
             {
               xtype: "button",
-              iconCls:"time",
-              id:"next",
+              iconCls:"list",
+              id:"menu",
               align:"left",
-              filtr:true,
               navigation_only:true,
               handler:function(){
-                if(this.getUi() == "decline"){
-                  this.up("navigationview").showInfo("all","Všechna utkání");
-                }else{
-                  this.up("navigationview").showInfo("next","Zatím neodehraná utkání");
-                }
-              }
-            },
-            {
-              xtype: "button",
-              iconCls:"calendar2",
-              id:"past",
-              align:"left",
-              filtr:true,
-              navigation_only:true,
-              handler:function(){
-                if(this.getUi() == "decline"){
-                  this.up("navigationview").showInfo("all","Všechna utkání");
-                }else{
-                  this.up("navigationview").showInfo("past","Již ukončené zápasy");
-                }
-              }
-            },
-            {
-              xtype: "button",
-              iconCls:"add",
-              name:"new",
-              navigation_only:true,
-              align:"right",
-              handler:function(){                
-                var editorPanel = Ext.getCmp("editorPanel") || new catcher.view.EditorPanel();                
-                if(!editorPanel.getParent()) Ext.Viewport.add(editorPanel);
-                
-                var formPanel = Ext.getCmp('editorPanel');
-                var tournament_id = Ext.getStore("Session").findRecord("uuid", Ext.device.Device.uuid).get("tournament_id");                
-                var tournament = Ext.getStore("Tournaments").findRecord("tournament_id",tournament_id,false,false,true);
-                var fields2push = catcher.app.getController("MatchController").composeSelect(tournament.get("fields"));
-                var skupiny2push = catcher.app.getController("MatchController").composeSelect(tournament.get("skupiny"));
-                var teams = catcher.app.getController("Evidence").composeTeams();
-                formPanel.query("selectfield[name=field]")[0].setOptions(fields2push);
-                formPanel.query("selectfield[name=skupina]")[0].setOptions(skupiny2push);
-                formPanel.query("selectfield[name=home_id]")[0].setOptions(teams);
-                formPanel.query("selectfield[name=away_id]")[0].setOptions(teams);
-                formPanel.setValues({
-                  time:new Date(),
-                  length: tournament.get("default_length")
+                var actionSheet = Ext.create('Ext.ActionSheet', {
+                    defaults: {
+                      iconMask: true
+                    },                   
+                    items: [                      
+                        {
+                            text: 'Odhlásit z turnaje',
+                            ui  : 'decline',
+                            iconCls:"power_on",
+                            handler:function(){
+                              Ext.Msg.confirm("Odhlášení", "Opravdu se chcete odhlásit?", function(response) {
+                                if (response == "yes") {
+                                  window.location.reload();
+                                }
+                              });
+                            }
+                        },
+                        {
+                            text: 'Zobrazit neodehraná utkání',
+                            iconCls:"time",
+                            handler:function(){
+                              Ext.getCmp("matchesNavigation").showInfo("next","Neukončené zápasy");
+                              actionSheet.hide();
+                            }
+                        },
+                        {
+                            text: 'Zobrazit skončené zápasy',
+                            iconCls:"calendar2",
+                            handler:function(){
+                              Ext.getCmp("matchesNavigation").showInfo("past","Již skončené zápasy");
+                              actionSheet.hide();
+                            }
+                        },                        
+                        {
+                            text: 'Zobrazit všechna utkání',
+                            iconCls: "star",
+                            handler:function(){
+                              Ext.getCmp("matchesNavigation").showInfo("all","Všechna utkání");
+                              actionSheet.hide();
+                            }
+                        },
+                        {
+                            text: 'Přidat nové utkání',
+                            iconCls:"add",
+                            ui: "confirm",
+                            handler:function(){
+                              var editorPanel = Ext.getCmp("editorPanel") || new catcher.view.EditorPanel();                
+                              if(!editorPanel.getParent()) Ext.Viewport.add(editorPanel);
+                              
+                              var formPanel = Ext.getCmp('editorPanel');
+                              var tournament_id = Ext.getStore("Session").findRecord("uuid", Ext.device.Device.uuid).get("tournament_id");                
+                              var tournament = Ext.getStore("Tournaments").findRecord("tournament_id",tournament_id,false,false,true);
+                              var fields2push = catcher.app.getController("MatchController").composeSelect(tournament.get("fields"));
+                              var skupiny2push = catcher.app.getController("MatchController").composeSelect(tournament.get("skupiny"),"skupina");
+                              var teams = catcher.app.getController("Evidence").composeTeams();
+                              formPanel.query("selectfield[name=field]")[0].setOptions(fields2push);
+                              formPanel.query("selectfield[name=skupina]")[0].setOptions(skupiny2push);
+                              formPanel.query("selectfield[name=home_id]")[0].setOptions(teams);
+                              formPanel.query("selectfield[name=away_id]")[0].setOptions(teams);
+                              formPanel.setValues({
+                                time:new Date(),
+                                length: tournament.get("default_length")
+                              });
+                              actionSheet.hide();                
+                              editorPanel.show();    
+                            }
+                        },
+                        {
+                            text: 'Zavřít menu',
+                            ui:"action",
+                            iconCls: "star",
+                            handler:function(){
+                              actionSheet.hide();
+                            }
+                        }
+                    ]
                 });                
-                editorPanel.show();                                                          
+                Ext.Viewport.add(actionSheet);
+                actionSheet.show();
               }
             },
             {
@@ -121,11 +151,6 @@ Ext.define("catcher.view.MatchesNavigation", {
     },
     
     showInfo:function(show,msg){
-      var btn = this.query("button[filtr=true]");                 
-      btn.forEach(function(element){                  
-        if(element.getId() != show) element.setUi("dark");
-        if(element.getId() == show) element.setUi("decline");
-      });
       if(msg != false) {      
         Ext.Viewport.setMasked({
           xtype : 'loadmask',
