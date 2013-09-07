@@ -15,17 +15,28 @@ Ext.define("catcher.view.MatchPlayerList", {
             activate : function() {
                 this.getStore().sort();
             },
-            painted : function(){              
+            painted : function(){
+              var message = "";
+              if(this.getId() == "MatchPlayerListScore") message = "Vyber skórujícího hráče";
+              if(this.getId() == "MatchPlayerListAssist") message = "Vyber nahrávajícího hráče";
+              Ext.Viewport.setMasked({
+                xtype: "loadmask",
+                indicator: false,
+                message: message
+              });              
               this.deselectAll();
               var session = getSession();
               var list = this;
-              // sk�ruj�c� hr�� si nem��e nahr�t s�m sob�              
+              // skórující hráč si nemůže nahrát sám sobě              
               if(this.getId() == "MatchPlayerListAssist"){
                 if(session.score_player_id>0){          
                   var skorujici = Ext.getStore("MatchPlayerListAssist").find("player_id",session.score_player_id,false,false,false,true);                            
                   list.getItemAt(skorujici).hide();          
                 }
-              }                             
+              }
+              window.setTimeout(function(){
+                Ext.Viewport.setMasked(false);
+              },1000);                             
             },
             deactivate : function(){
               var session = getSession();
