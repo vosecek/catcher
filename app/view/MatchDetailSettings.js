@@ -4,16 +4,22 @@ Ext.define("catcher.view.MatchDetailSettings",{
 	requires: ["Ext.form.FieldSet","Ext.form.Select","Ext.field.Hidden","Ext.field.DatePicker","Ext.field.Number","Ext.ux.DateTimePicker"],
 	
 	config:{
+    modal: true,
+    hideOnMaskTap: false,
+    styleHtmlContent: true,
+    centered: true,
+    width: "95%",
+    height:"95%",
+    maxHeight:"550px",
+    maxWidth:"550px",
+    
     title : "Nastavení",
-    iconCls : "settings",
-    id: "matchDetailSettings",
-		styleHtmlContent: true,    
+    id: "matchDetailSettings",    
 		
 		items:[
 			{
 				xtype: "fieldset",
-				title: "Nastavení zápasu",
-				instructions : "",
+				instructions : "V případě změny oproti rozpisu je vhodné upravit tato data, standardně není třeba.",
 				
 				items:	[          
 					{
@@ -47,12 +53,33 @@ Ext.define("catcher.view.MatchDetailSettings",{
 					}
 				]				
 			},
-			{
-				xtype: "button",
-        name: "submit",
-				text: "Uložit",
-				ui: "confirm"
-			}			
+      {
+        docked: 'top',
+        xtype: 'toolbar',
+        title: 'Parametry utkání'
+      },{
+        docked: 'bottom',
+        ui: 'light',
+        xtype: 'toolbar',
+        items: [
+          {
+            ui: "decline",
+            text: 'Zavřít',
+            handler: function() {
+                Ext.getCmp('matchDetailSettings').hide();
+            }
+          },{
+            xtype: 'spacer'
+          },{
+            text: 'Uložit',
+            ui: 'confirm',
+            handler: function() {
+              catcher.app.getController("MatchController").updateMatchSettings();
+              Ext.getCmp('matchDetailSettings').hide();
+            }
+          }
+        ]
+      }			
 		],
 		listeners: {
 		}														

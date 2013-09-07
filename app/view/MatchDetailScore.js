@@ -4,16 +4,22 @@ Ext.define("catcher.view.MatchDetailScore",{
 	requires: ["Ext.form.FieldSet","Ext.form.Select","Ext.field.Hidden","Ext.field.Toggle",],
 	
 	config:{
+    modal: true,
+    hideOnMaskTap: false,
+    styleHtmlContent: true,
+    centered: true,
+    width: "95%",
+    height:"95%",
+    maxHeight:"550px",
+    maxWidth:"550px",
+    
     title : "Skóre + spirit",
-    iconCls : "check2",
     id: "matchDetailScore",
-		styleHtmlContent: true,
 		
 		items:[
 			{
 				xtype: "fieldset",
-				title: "Výsledné skóre a spirit",
-				instructions : "Po skončení utkání přepni Zápas skončil. <br />Spirit ve formátu kolik tým obdržel, ne kolik udělil. <br /> Výsledné skóre lze přepsat, body budou vloženy jako anonymní.",
+				instructions : "Spirit ve formátu kolik tým obdržel, ne kolik udělil. <br /> Výsledné skóre lze přepsat, body budou vloženy jako anonymní.",
 				
 				items:	[
           {
@@ -52,16 +58,33 @@ Ext.define("catcher.view.MatchDetailScore",{
 						value: ""
 					}
 				]				
-			},
-			{
-				xtype: "button",
-        name: "submit",
-				text: "Uložit",
-				ui: "confirm"
-			}			
-		],
-		listeners: {
-							 
-		}														
+			},{
+        docked: 'top',
+        xtype: 'toolbar',
+        title: 'Výsledek zápasu'
+      },{
+        docked: 'bottom',
+        ui: 'light',
+        xtype: 'toolbar',
+        items: [
+          {
+            ui: "decline",
+            text: 'Zavřít',
+            handler: function() {
+                Ext.getCmp('matchDetailScore').hide();
+            }
+          },{
+            xtype: 'spacer'
+          },{
+            text: 'Uložit',
+            ui: 'confirm',
+            handler: function() {
+              catcher.app.getController("MatchController").updateMatchScore();
+              Ext.getCmp('matchDetailScore').hide();
+            }
+          }
+        ]
+      }			
+		],														
 	}				
 });

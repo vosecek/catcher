@@ -2,7 +2,7 @@ Ext.define("catcher.view.MatchesNavigation", {
     extend : "Ext.navigation.View",
     xtype : "matchesNavigation",
     id : "matchesNavigation",
-    requires : [ "catcher.view.MatchDetail", "catcher.view.MatchesList", "catcher.view.AddPointDetail", "catcher.view.ScoreList", "catcher.view.MatchPlayerList", "catcher.view.EditorPanel","Ext.ActionSheet"],
+    requires : [ "catcher.view.MatchDetail", "catcher.view.MatchesList", "catcher.view.AddPointDetail", "catcher.view.ScoreList", "catcher.view.MatchPlayerList", "catcher.view.EditorPanel","catcher.view.MainNavigation"],
     config : {
         title : "Zápasy",
         iconCls : "list",        
@@ -24,136 +24,43 @@ Ext.define("catcher.view.MatchesNavigation", {
               xtype: "button",
               iconCls:"list",
               id:"menu",
-              align:"left",
-              navigation_only:true,
-              handler:function(){
-                var actionSheet = Ext.create('Ext.ActionSheet', {
-                    defaults: {
-                      iconMask: true
-                    },
-                    showAnimation:false,                   
-                    hideAnimation:false,
-                    items: [                      
-                        {
-                            text: 'Odhlásit z turnaje',
-                            ui  : 'decline',
-                            iconCls:"power_on",
-                            handler:function(){
-                              Ext.Msg.confirm("Odhlášení", "Opravdu se chcete odhlásit?", function(response) {
-                                if (response == "yes") {
-                                  window.location.reload();
-                                }
-                              });
-                            }
-                        },
-                        {
-                            text: 'Zobrazit neodehraná utkání',
-                            iconCls:"time",
-                            handler:function(){
-                              Ext.getCmp("matchesNavigation").showInfo("next","Neukončené zápasy");
-                              actionSheet.hide();
-                            }
-                        },
-                        {
-                            text: 'Zobrazit skončené zápasy',
-                            iconCls:"calendar2",
-                            handler:function(){
-                              Ext.getCmp("matchesNavigation").showInfo("past","Již skončené zápasy");
-                              actionSheet.hide();
-                            }
-                        },                        
-                        {
-                            text: 'Zobrazit všechna utkání',
-                            iconCls: "star",
-                            handler:function(){
-                              Ext.getCmp("matchesNavigation").showInfo("all","Všechna utkání");
-                              actionSheet.hide();
-                            }
-                        },
-                        {
-                            text: 'Přidat nové utkání',
-                            iconCls:"add",
-                            ui: "confirm",
-                            handler:function(){
-                              var editorPanel = Ext.getCmp("editorPanel") || new catcher.view.EditorPanel();                
-                              if(!editorPanel.getParent()) Ext.Viewport.add(editorPanel);
-                              
-                              var formPanel = Ext.getCmp('editorPanel');
-                              var tournament_id = Ext.getStore("Session").findRecord("uuid", Ext.device.Device.uuid).get("tournament_id");                
-                              var tournament = Ext.getStore("Tournaments").findRecord("tournament_id",tournament_id,false,false,true);
-                              var fields2push = catcher.app.getController("MatchController").composeSelect(tournament.get("fields"));
-                              var skupiny2push = catcher.app.getController("MatchController").composeSelect(tournament.get("skupiny"),"skupina");
-                              var teams = catcher.app.getController("Evidence").composeTeams();
-                              formPanel.query("selectfield[name=field]")[0].setOptions(fields2push);
-                              formPanel.query("selectfield[name=skupina]")[0].setOptions(skupiny2push);
-                              formPanel.query("selectfield[name=home_id]")[0].setOptions(teams);
-                              formPanel.query("selectfield[name=away_id]")[0].setOptions(teams);
-                              formPanel.setValues({
-                                time:new Date(),
-                                length: tournament.get("default_length")
-                              });
-                              actionSheet.hide();                
-                              editorPanel.show();    
-                            }
-                        },
-                        {
-                            text: 'Zavřít menu',
-                            ui:"action",
-                            iconCls: "close",
-                            handler:function(){
-                              actionSheet.hide();
-                            }
-                        }
-                    ]
-                });                
-                Ext.Viewport.add(actionSheet);
-                actionSheet.show();
+              align:"right",
+              handler:function(){                
+                Ext.getCmp("actionSheet").show();
               }
-            },
-            {
-                xtype : "button",                
-                iconCls : "refresh",
-                ui:"confirm",                
-                align : "right",
-                name : "refreshConfirm",
-                id : "refreshStores",
-                handler : function() {                        
-                    var matchList = Ext.getCmp("matchesList");
-                    var scoreList = Ext.getCmp("scoreList");
-                    var matchDetail = Ext.getCmp("matchDetail");
-                    var points = Ext.getStore("Points");
-                    points.sync();
-                    
-                    var matches = Ext.getStore("Matches");
-                    var match_id = Ext.getStore("Session").findRecord("uuid", Ext.device.Device.uuid).match_id;
-                    
-                    if (typeof matchList != 'undefined') {
-                        matchList.getStore().load();
-                    }
-
-                    
-                    if (typeof scoreList != 'undefined') {                                          
-                      points.clearFilter();
-                      points.load(function(){
-                        scoreList.getStore().load();
-                      });                                                                  
-                    }
-                                                           
-                    if (typeof match_id != 'undefined' && typeof matchDetail != 'undefined') {                        
-                        Ext.Viewport.setMasked({
-                          xtype : 'loadmask',
-                          message : 'Aktualizuji data z www.frisbee.cz'
-                        });                                                
-                        matches.load(function(){
-                          var match = matches.findRecord("match_id", match_id, false, false, false, true).data;
-                          Ext.Viewport.setMasked(false);
-                          catcher.app.getController("MatchController").fillMatchDetailContent(match);                          
-                        });                                                  
-                    }
-                }
-            }                        
+            }                                    
           ]
+        },
+        listeners:{
+          push:function(nav,view){
+            var activeItem = nav.getActiveItem();
+            var actionSheet = Ext.getCmp("actionSheet");
+            nav.prepareActionSheet(actionSheet,activeItem);
+          },
+          pop:function(nav,view){            
+            var activeItem = nav.getActiveItem();
+            var actionSheet = Ext.getCmp("actionSheet");
+            nav.prepareActionSheet(actionSheet,activeItem);
+          },
+          painted: function(){
+            var actionSheet = Ext.getCmp("actionSheet") || new catcher.view.MainNavigation();
+            if(!actionSheet.getParent()) Ext.Viewport.add(actionSheet);
+            actionSheet.hide();
+            this.prepareActionSheet(actionSheet,this.getActiveItem());
+          }
         }
+    },
+    
+    prepareActionSheet:function(actionSheet,activeItem){
+      activeItem = activeItem.getId()
+//       console.log(activeItem);
+      actionSheet.query("button").forEach(function(el){        
+        if(el[activeItem] == true || el["all"] == true) {
+          el.show();
+        }else{
+          el.hide();
+        }
+      });
     },
     
     showInfo:function(show,msg){

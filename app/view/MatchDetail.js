@@ -1,5 +1,5 @@
 Ext.define("catcher.view.MatchDetail", {
-    extend : "Ext.tab.Panel",
+    extend : "Ext.Panel",
     xtype : "matchDetail",            
 
     config : {
@@ -8,14 +8,14 @@ Ext.define("catcher.view.MatchDetail", {
       layout : {
         animation:false
       },
-      tabBarPosition : "bottom",
+//       tabBarPosition : "bottom",
         items:[
           {xtype: "matchDetailCounter"}          
         ],
        listeners:{
         initialize:function(){
-          this.add({xtype:"matchDetailSettings"});
-          this.add({xtype:"matchDetailScore"});
+//           this.add({xtype:"matchDetailSettings"});
+//           this.add({xtype:"matchDetailScore"});
         }
        }             
     }

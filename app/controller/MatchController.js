@@ -77,17 +77,19 @@ Ext.define('catcher.controller.MatchController', {
     
     showMatchDetail : function(list, index,target,record) {      
         Ext.getCmp("tournament").getTabBar().hide(); // skrytí hlavní navigace turnaje        
-        var match = record.data;
+        var match = record;
         Ext.getCmp("matchesNavigation").query("button[navigation_only=true]").forEach(function(el){el.hide()}); // skrytí filtrovacích tlačítek 
         this.getMatchesNavigation().push({
             xtype : "matchDetail",
-            title : match.home_name_short + " x " + match.away_name_short,
-            data : match
-        });                        
+            title : match.get("home_name_short") + " x " + match.get("away_name_short"),
+            data : match.data
+        });
+        
         var session = getSession();
-        session.match_id = match.match_id;
-        this.fillMatchDetailContent(match);
-        this.fillMatchDetailSettings(match);        
+        session.match_id = match.get("match_id");
+        
+        this.fillMatchDetail(match);
+                
     },
 
     showAddPoint : function(event) {
@@ -230,8 +232,7 @@ Ext.define('catcher.controller.MatchController', {
       match.setDirty(true);
       matches.syncWithListener(function(){                
         var controller = catcher.app.getController("MatchController");
-        controller.fillMatchDetailContent(match.data);        
-        controller.fillMatchDetailSettings(match.data);
+        controller.fillMatchDetail(match);
         if(pop_level > 0) controller.getMatchesNavigation().pop(pop_level);
         Ext.Viewport.setMasked(false);
         matches.getProxy().setExtraParams({});                
@@ -310,15 +311,17 @@ Ext.define('catcher.controller.MatchController', {
           controller.updateMatchInfo(match_id);
         });                               
     },
+    
+    fillMatchDetail : function(match){            
+      this.getMatchDetail().query("button[name=scoreHome]")[0].setText(new String(match.get("score_home")));
+      this.getMatchDetail().query("button[name=scoreAway]")[0].setText(new String(match.get("score_away")));
+      
+      getTeamScore(match.get("match_id"),match.get("home_id"));
+      getTeamScore(match.get("match_id"),match.get("away_id"));
+      Ext.getStore("Points").clearFilter();
+    },
 
-    fillMatchDetailContent : function(match) {
-        this.getMatchDetail().query("button[name=scoreHome]")[0].setText(new String(match.score_home));
-        this.getMatchDetail().query("button[name=scoreAway]")[0].setText(new String(match.score_away));
-        
-        var cisla = new Array;
-        for(var i = 0;i<100;i++){
-          cisla.push({text:i,value:i});
-        }        
+    fillMatchDetailScore : function(match) {                            
 //         var runner = this.getMatchDetailScore().query("togglefield")[0];
 //         runner.on("change",function(field,slider,thumb,newValue,oldValue){      
 //           Ext.Msg.confirm("Potvrdit akci","Opravdu začal či skončil zápas?",function(response){
@@ -331,30 +334,31 @@ Ext.define('catcher.controller.MatchController', {
 //             runner.resumeEvents(true);          
 //           });
 //         });
-        
-        var formular = this.getMatchDetailScore();
+
+        var cisla = new Array;
+        for(var i = 0;i<100;i++){
+          cisla.push({text:i,value:i});
+        }
+                
+        var formular = this.getMatchDetailScore();      
         var selects = formular.query("selectfield").forEach(function(el){el.setOptions(cisla);});
-        formular.setValues(match);
         
-        formular.setValues(match);
-        formular.query("selectfield[name=score_home]")[0].setLabel("Skóre "+match.home_name_short);
-        formular.query("selectfield[name=spirit_home]")[0].setLabel("Spirit "+match.home_name_short);
-        formular.query("selectfield[name=score_away]")[0].setLabel("Skóre "+match.away_name_short);
-        formular.query("selectfield[name=spirit_away]")[0].setLabel("Spirit "+match.away_name_short);
-        
-        getTeamScore(match.match_id,match.home_id);
-        getTeamScore(match.match_id,match.away_id);
-        Ext.getStore("Points").clearFilter();
+        formular.setValues(match.data);
+        formular.query("selectfield[name=score_home]")[0].setLabel("Skóre "+match.get("home_name_short"));
+        formular.query("selectfield[name=spirit_home]")[0].setLabel("Spirit "+match.get("home_name_short"));
+        formular.query("selectfield[name=score_away]")[0].setLabel("Skóre "+match.get("away_name_short"));
+        formular.query("selectfield[name=spirit_away]")[0].setLabel("Spirit "+match.get("away_name_short"));                        
     },        
     
-    fillMatchDetailSettings: function(match){            
-      this.getMatchDetailSettings().setValues(match);            
+    fillMatchDetailSettings: function(match){
+      var formular = this.getMatchDetailSettings();             
+      formular.setValues(match.data);                  
       var session = getSession();
       var tournament_data = Ext.getStore("Tournaments").findRecord("tournament_id",session.get("tournament_id"),false,false,true);
       var fields2push = this.composeSelect(tournament_data.get("fields"),"fields");      
       var skupiny2push = this.composeSelect(tournament_data.get("skupiny"),"skupina");
-      this.getMatchDetailSettings().query("selectfield[name=field]")[0].setOptions(fields2push).setValue(match.field);            
-      this.getMatchDetailSettings().query("selectfield[name=skupina]")[0].setOptions(skupiny2push).setValue(match.skupina);
+      formular.query("selectfield[name=field]")[0].setOptions(fields2push).setValue(match.get("field"));            
+      formular.query("selectfield[name=skupina]")[0].setOptions(skupiny2push).setValue(match.get("skupina"));
     },
     
     composeSelect:function(input,type){
@@ -409,10 +413,10 @@ Ext.define('catcher.controller.MatchController', {
       Ext.Msg.confirm("Zadávaný výsledek",match.get("home_name_short")+" vs. "+match.get("away_name_short")+": "+values.score_home+":"+values.score_away,function(response){
         if(response == "yes"){                       
           if(diffs_fatal.length > 0){
-            Ext.Msg.alert("Chybné skóre",diffs_fatal.join("<br />"));
+            Ext.Msg.alert("Nižší skóre",diffs_fatal.join("<br />"));
           }else{
             if(diffs.length > 0){
-              Ext.Msg.confirm("Chybné skóre",diffs.join("<br />"),function(response){              
+              Ext.Msg.confirm("Vyšší skóre",diffs.join("<br />"),function(response){              
                 if(response == "yes") {              
                   var points = Ext.getStore("Points");              
                   function equalizer(difference,team_id,match_id){
@@ -460,7 +464,7 @@ Ext.define('catcher.controller.MatchController', {
       });      
       
       var form = this.getMatchDetailSettings();            
-      values = form.getValues(true, true);      
+      values = form.getValues(true, true);            
       
       var matches = Ext.getStore("Matches");
       var match = matches.findRecord("match_id",values.match_id,false,false,true);
