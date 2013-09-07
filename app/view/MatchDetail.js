@@ -5,6 +5,9 @@ Ext.define("catcher.view.MatchDetail", {
     config : {
       id : "matchDetail",
       styleHtmlContent : true,
+      layout : {
+        animation:false
+      },
       tabBarPosition : "bottom",
         items:[
           {xtype: "matchDetailCounter"}          

@@ -31,7 +31,7 @@ Ext.define("catcher.view.MatchDetailScore",{
           {
 						xtype: "selectfield",
 						label: "Skóre hosté",
-						name: "score_away",
+						name: "score_away",  
 						options: []
 					},
           {

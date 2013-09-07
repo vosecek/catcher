@@ -9,6 +9,10 @@ Ext.define("catcher.view.MatchesNavigation", {
         items : [ {
             xtype : 'matchesList'
         } ],
+        
+        layout : {
+          animation:false
+        },
 
         navigationBar : {
             id:"navigace",
@@ -26,7 +30,9 @@ Ext.define("catcher.view.MatchesNavigation", {
                 var actionSheet = Ext.create('Ext.ActionSheet', {
                     defaults: {
                       iconMask: true
-                    },                   
+                    },
+                    showAnimation:false,                   
+                    hideAnimation:false,
                     items: [                      
                         {
                             text: 'Odhlásit z turnaje',
@@ -93,7 +99,7 @@ Ext.define("catcher.view.MatchesNavigation", {
                         {
                             text: 'Zavřít menu',
                             ui:"action",
-                            iconCls: "star",
+                            iconCls: "close",
                             handler:function(){
                               actionSheet.hide();
                             }

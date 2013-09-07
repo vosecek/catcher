@@ -11,6 +11,9 @@ Ext.define("catcher.view.Tournament", {
         }
       },
       id : "tournament",
+      layout : {
+        animation:false
+      },
       items : [
         {xtype : "matchesNavigation"},
         {xtype : "teamList"},

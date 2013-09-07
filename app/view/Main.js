@@ -3,6 +3,10 @@ var main = Ext.define('catcher.view.Main', {
 	xtype : 'main',
 	config : {
 		tabBarPosition : 'bottom',
+    
+    layout : {
+      animation:false
+    },
 
 		items : [ {
 			xtype : 'loginPanel'
