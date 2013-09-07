@@ -8,15 +8,8 @@ Ext.define("catcher.view.MatchDetail", {
       layout : {
         animation:false
       },
-//       tabBarPosition : "bottom",
         items:[
           {xtype: "matchDetailCounter"}          
-        ],
-       listeners:{
-        initialize:function(){
-//           this.add({xtype:"matchDetailSettings"});
-//           this.add({xtype:"matchDetailScore"});
-        }
-       }             
+        ]             
     }
 });

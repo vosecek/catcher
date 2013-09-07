@@ -50,15 +50,15 @@ Ext.define("catcher.view.MatchDetailCounter", {
             name : "addPointAway",
             text : "+",
             ui: "away"
-        } ]
-    }],
-    listeners : {
+        }]
+      }],
+      listeners : {
         painted : function(){
           this.query('.button').forEach(function(c){
             var pressedCls = "x-button-pressed";         
             c.removeCls(pressedCls);
           });
         }          
-    }
-  }
+      }
+    }      
 });

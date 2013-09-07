@@ -501,7 +501,7 @@ function getTeamScore(matchId, teamId) {
     points.filter("match_id", matchId);
     points.filter("team_id", teamId);
 
-    var ScoreRoster = Ext.getStore("MatchPlayerListAssist");
+    var ScoreRoster = Ext.getStore("MatchPlayerListAssist");        
 
     var pointsToDisplay = new Array();
     points.each(function(item, index, length) {
@@ -519,7 +519,7 @@ function getTeamScore(matchId, teamId) {
             score_home: item.get("score_home"),
             score_away: item.get("score_away")              
         });
-    });        
+    });            
 
     Ext.define("PointView", {
         extend : "Ext.data.Model",

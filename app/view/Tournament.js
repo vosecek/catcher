@@ -19,29 +19,6 @@ Ext.define("catcher.view.Tournament", {
         {xtype : "matchesNavigation"},
         {xtype : "teamList"},
         {xtype : "helpPanel"}
-      ],
-      listeners:{
-        initialize: function(){
-//           ,{
-//             xtype:"button",
-//             id:"help",
-//             iconCls:"help",
-//             left: "1%",        
-//             height: "50%",
-//             margin: "10 0 0 0",
-//             handler:function(){                
-//               var helpPanel = Ext.getCmp("helpPanel") || new catcher.view.HelpPanel();
-//               
-//               if(!helpPanel.getParent()){
-//                 Ext.Viewport.add(helpPanel);
-//               }
-// 
-//                               
-//               helpPanel.show();                                                          
-//             }
-//           }
-//           );
-        }
-      }
+      ]    
     }
 });
