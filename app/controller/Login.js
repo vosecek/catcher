@@ -6,7 +6,7 @@ Ext.define('catcher.controller.Login', {
             loginForm : 'loginPanel'
         },
         control : {
-            'loginPanel button' : {
+            'loginPanel button[ui=confirm]' : {
                 tap : 'doLogin'
             }
         }

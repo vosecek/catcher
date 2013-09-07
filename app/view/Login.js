@@ -6,13 +6,13 @@ Ext.define("catcher.view.Login", {
 
     config : {
         title : "Přihlášení",
-        iconCls : "home",
-        styleHtmlContent: true,
+        iconCls : "home",        
+//         styleHtmlContent: true,    
 
         items : [ {
             xtype : "fieldset",
             title : "Přihlášení k turnaji",
-            instructions : "Vyberte jeden z aktuálních turnajů",
+            instructions: "Pokud zde není žádný turnaj, ověřte, zda je zařízení připojeno k internetu a zkuste Znovu načíst turnaje",
             items : [ {
                 xtype : "selectfield",
                 displayField : "text",
@@ -29,22 +29,41 @@ Ext.define("catcher.view.Login", {
         }, {
             xtype : "button",
             text : "Přihlásit",
-            ui : "confirm"
-        } ],
+            ui : "confirm",
+        },
+        {
+            xtype : "button",
+            text : "Znovu načti turnaje",
+            ui : "action",
+            margin: "1em 0em 0em 0em",
+            handler:function(){
+              this.up("formpanel").loadTournaments();
+            }
+        }
+         ],
         listeners:{
           // vložení možností do Selectu
           painted : function() {
-              var options = new Array();
-              var store = Ext.getStore("Tournaments").load(function(records) {
-                  store.each(function(radek) {
-                      options.push({
-                          text : radek.get("tournament_name"),
-                          value : radek.get("tournament_id")
-                      });
-                  });
-                  Ext.getCmp("turnaj").setOptions(options);
-              });
+              this.loadTournaments();
           }
         }      
-    },          
+    },
+    
+    loadTournaments:function(){
+      Ext.Viewport.setMasked({
+        xtype:"loadmask",
+        message:"Stahuji aktuální turnaje"
+      });
+      var options = new Array();
+      var store = Ext.getStore("Tournaments").load(function(records) {
+          store.each(function(radek) {
+              options.push({
+                  text : radek.get("tournament_name"),
+                  value : radek.get("tournament_id")
+              });
+          });
+          Ext.getCmp("turnaj").setOptions(options);
+          Ext.Viewport.setMasked(false);
+      });
+    }          
 });
