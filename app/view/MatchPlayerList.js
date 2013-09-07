@@ -7,7 +7,8 @@ Ext.define("catcher.view.MatchPlayerList", {
         scrollVertical : true,
         disableSelection: false,
         store : "Players",
-        itemTpl : "<strong>{nick} #{number}</strong> <small>({surname} {name})</small>",
+//         itemTpl : "",
+        itemTpl : "<div style=\"{[values.player_id==2147483647?\"font-style:italic; font-size:smaller;\":\"\"]} {[values.player_id==0?\"font-style:italic; font-size:smaller;\":\"\"]}\"><strong>{nick} #{number}</strong> <small>({surname} {name})</small></div>",        
         onItemDisclosure : false,
         styleHtmlContent: true,
         listeners : {
