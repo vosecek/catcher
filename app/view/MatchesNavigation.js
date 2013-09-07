@@ -55,7 +55,7 @@ Ext.define("catcher.view.MatchesNavigation", {
       activeItem = activeItem.getId()
 //       console.log(activeItem);
       actionSheet.query("button").forEach(function(el){        
-        if(el[activeItem] == true || el["all"] == true) {
+        if(el.config[activeItem] == true || el.config["all"] == true) {
           el.show();
         }else{
           el.hide();
@@ -73,6 +73,7 @@ Ext.define("catcher.view.MatchesNavigation", {
       }
       var store = Ext.getCmp("matchesList").getStore();
       store.clearFilter();
+      var session = getSession();      
       if(show!="all"){
         store.filterBy(function(record){                    
           if(show == "past"){                            
@@ -84,6 +85,14 @@ Ext.define("catcher.view.MatchesNavigation", {
             return false;
           }
         });
+      }
+      
+      if(session.team_filter > 0){
+        store.filterBy(function(record){          
+          if(record.get("home_id") == session.team_filter) return true;
+          if(record.get("away_id") == session.team_filter) return true;
+          return false;
+        });                                
       }
       if(msg != false) {
         window.setTimeout(function(){
