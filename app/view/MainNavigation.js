@@ -168,7 +168,7 @@ Ext.define("catcher.view.MainNavigation",{
       					}]
               }); 
               modalPanel.add(formular);
-//               modalPanel.setHeight(false);
+              modalPanel.setHeight("105px");
               var data = Ext.getStore("Teams").data;
               var teams2push = new Array;
               teams2push.push({
