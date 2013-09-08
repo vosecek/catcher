@@ -94,7 +94,7 @@ Ext.define("catcher.view.EditorPanel",{
                 store.syncWithListener(function(){
                   store.load(function(){
                     Ext.Viewport.setMasked(false);
-                    Ext.Msg.alert("OK","Zápas uložen");                  
+//                     Ext.Msg.alert("OK","Zápas uložen");                  
                   });
                 });
                }                              

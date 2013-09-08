@@ -47,12 +47,6 @@ Ext.define('catcher.controller.MatchController', {
             },
             "editPointDetail button[name=editConfirm]" : {
                 tap : "updatePoint"
-            },
-            "matchDetailSettings button[name=submit]":{
-                tap: "updateMatchSettings"
-            },
-            "matchDetailScore button[name=submit]":{
-                tap: "updateMatchScore"
             }
         },
         listeners: {
@@ -481,7 +475,7 @@ function saveMatchSettings(match,values){
   matches.getProxy().setExtraParam("match_id",values.match_id);                 
   
   matches.syncWithListener(function(){
-    Ext.Msg.alert("OK","Informace o zápasu aktualizovány.");
+//     Ext.Msg.alert("OK","Informace o zápasu aktualizovány.");
     Ext.Viewport.setMasked(false);            
   });
 }

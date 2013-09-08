@@ -1,4 +1,9 @@
 <?php
+
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+header("Access-Control-Allow-Methods: OPTIONS,GET,POST,PUT,DELETE");
+
 header('content-type: text/html; charset=utf-8');
 include "paths.php";
 include $path_conf."config.php";

@@ -7,7 +7,7 @@ Ext.define("catcher.view.Login", {
     config : {
         title : "Přihlášení",
         iconCls : "home",        
-//         styleHtmlContent: true,    
+        styleHtmlContent: true,    
 
         items : [ {
             xtype : "fieldset",
@@ -30,6 +30,7 @@ Ext.define("catcher.view.Login", {
             xtype : "button",
             text : "Přihlásit",
             ui : "confirm",
+            height:"40px"
         },
         {
             xtype : "button",
