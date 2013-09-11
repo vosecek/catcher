@@ -8,8 +8,7 @@ Ext.define("catcher.view.Tournament", {
       tabBar:{
         defaults:{
           iconMask: true
-        },
-        
+        }        
       },
       id : "tournament",
       layout : {

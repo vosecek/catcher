@@ -90,7 +90,7 @@ Ext.define("catcher.view.MainNavigation",{
             text: 'Zobrazit neodehraná utkání',
             iconCls:"time",
             matchesList: true,
-            list_filter:true,
+            listFilter:true,
             handler:function(){
               Ext.getCmp("actionSheet").setFilters(this,"next","Neodehraná utkání");              
             }
@@ -98,7 +98,7 @@ Ext.define("catcher.view.MainNavigation",{
         {
             text: 'Zobrazit skončené zápasy',
             iconCls:"calendar2",
-            list_filter:true,
+            listFilter:true,
             matchesList: true,
             handler:function(){
               Ext.getCmp("actionSheet").setFilters(this,"past","Již skončené zápasy");
@@ -125,9 +125,16 @@ Ext.define("catcher.view.MainNavigation",{
                     {
                       xtype: "button",
                       align:"left",
-                      iconCls: "delete",
+                      text: "Zrušit",
                       ui: "decline",
                       handler: function(){
+                        session.team_filter = 0;
+                        var filtr = "žádný"
+                        Ext.getCmp("matchesNavigation").showInfo("all","Všechna utkání");
+                        Ext.getCmp("actionSheet").query("button").forEach(function(el){
+                          if(el.config["listFilter"] == true) el.setUi("");
+                        });
+                        Ext.getCmp("filtr").setText("Filtr týmu: "+filtr);                        
                         modalPanel.hide();
                       }                    
                     },
@@ -137,7 +144,7 @@ Ext.define("catcher.view.MainNavigation",{
                     {
                       xtype: "button",
                       align:"right",
-                      iconCls: "check2",
+                      text: "Nastavit",
                       ui: "confirm",
                       handler: function(){
                         var data = formular.getValues();
@@ -152,13 +159,13 @@ Ext.define("catcher.view.MainNavigation",{
                           Ext.getCmp("matchesNavigation").showInfo("all","Všechna utkání");
                         }
                         Ext.getCmp("actionSheet").query("button").forEach(function(el){
-                          if(el.config["list_filter"] == true) el.setUi("");
+                          if(el.config["listFilter"] == true) el.setUi("");
                         });
                         Ext.getCmp("filtr").setText("Filtr týmu: "+filtr);                        
                         modalPanel.hide();
                       }
                     }
-                  ],
+                  ]
                 },
                 {
       						xtype: "selectfield",
@@ -192,6 +199,7 @@ Ext.define("catcher.view.MainNavigation",{
           iconCls : "refresh",
           matchesList: true,
           matchDetail: true,
+          scoreList:true,
           margin: "1em 0em 0.5em 0em",
           ui:"confirm",                                          
           handler : function() {
@@ -207,13 +215,15 @@ Ext.define("catcher.view.MainNavigation",{
               
               if (typeof matchList != 'undefined') {
                   matchList.getStore().load();
+                  Ext.getStore("Points").load();
               }
 
               
               if (typeof scoreList != 'undefined') {                                          
                 points.clearFilter();
+                var session = getSession();
                 points.load(function(){
-                  scoreList.getStore().load();
+                  catcher.app.getController("MatchController").getScoreList().setStore(getTeamScore(session.match_id, session.showScoreTeamId));                
                 });                                                                  
               }
                                                      
@@ -221,7 +231,8 @@ Ext.define("catcher.view.MainNavigation",{
                   Ext.Viewport.setMasked({
                     xtype : 'loadmask',
                     message : 'Aktualizuji data z www.frisbee.cz'
-                  });                                                
+                  });
+                  Ext.getStore("Points").sync();                                                
                   matches.load(function(){
                     var match = matches.findRecord("match_id", match_id, false, false, false, true);
                     Ext.Viewport.setMasked(false);
@@ -245,13 +256,14 @@ Ext.define("catcher.view.MainNavigation",{
     setFilters:function(button,view,msg){      
       var ui = button.getUi();
       if(ui == "away") {
+        ui = "";
         view = "all";
         msg = "Všechny zápasy";
       }else{
         ui = "away";
       }
       Ext.getCmp("actionSheet").query("button").forEach(function(el){
-        if(el.config["list_filter"] == true) el.setUi("");
+        if(el.config["listFilter"] == true) el.setUi(false);
       });
       Ext.getCmp("matchesNavigation").showInfo(view,msg);
       button.setUi(ui);
