@@ -6,7 +6,7 @@ Ext.define("catcher.view.MatchDetailSettings",{
 	config:{
     modal: true,
     hideOnMaskTap: false,
-    styleHtmlContent: true,
+//     styleHtmlContent: true,
     centered: true,
     width: "95%",
     height:"95%",
@@ -26,17 +26,20 @@ Ext.define("catcher.view.MatchDetailSettings",{
 						xtype: "selectfield",
 						label: "Hřiště",
 						name: "field",
+            labelWidth: "45%",
 						options: []
 					},
           {
 						xtype: "selectfield",
 						label: "Skupina",
 						name: "skupina",
+            labelWidth: "45%", 
 						options: []
 					},
           {
 						xtype: "numberfield",
 						label: "Délka utkání [min]",
+            labelWidth: "45%",
 						name: "length"
 					},          
           {
@@ -44,6 +47,7 @@ Ext.define("catcher.view.MatchDetailSettings",{
             dateTimeFormat: "j.n.Y H:i",
 						label: "Začátek dle rozpisu",
 						name: "time",
+            labelWidth: "45%",
 						value: ""
 					},
 					{

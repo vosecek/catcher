@@ -7,7 +7,7 @@ Ext.define("catcher.view.EditorPanel",{
   config: {
     modal: true,
     hideOnMaskTap: false,
-    styleHtmlContent: true,
+//     styleHtmlContent: true,
     centered: true,
     width: "95%",
     height:"95%",
@@ -23,31 +23,37 @@ Ext.define("catcher.view.EditorPanel",{
             xtype: 'selectfield',
             name: 'home_id',
             label: "První tým",
+            labelWidth: "40%",
             options:[]
           },{
             xtype: 'selectfield',
             name: 'away_id',
             label: "Druhý tým",
+            labelWidth: "40%",
             options:[]
           },{
 						xtype: "selectfield",
 						label: "Hřiště",
 						name: "field",
+            labelWidth: "40%",
 						options: []
 					},{
           },{
 						xtype: "selectfield",
 						label: "Skupina",
 						name: "skupina",
+            labelWidth: "40%",
 						options: []
 					},{
 						xtype: "numberfield",
 						label: "Délka utkání [min]",
+            labelWidth: "40%",
 						name: "length"
 					},{
 						xtype: "datetimepickerfield",
             dateTimeFormat: "j.n.Y H:i",
 						label: "Začátek dle rozpisu",
+            labelWidth: "40%",
 						name: "time",
 						value: ""
 					}

@@ -1,12 +1,12 @@
 Ext.define("catcher.view.MatchDetailScore",{
 	extend: "Ext.form.Panel",
 	xtype: "matchDetailScore",					
-	requires: ["Ext.form.FieldSet","Ext.form.Select","Ext.field.Hidden","Ext.field.Toggle",],
+	requires: ["Ext.form.FieldSet","Ext.form.Select","Ext.field.Hidden","Ext.field.Toggle"],
 	
 	config:{
     modal: true,
     hideOnMaskTap: false,
-    styleHtmlContent: true,
+//     styleHtmlContent: true,
     centered: true,
     width: "95%",
     height:"95%",
@@ -26,30 +26,36 @@ Ext.define("catcher.view.MatchDetailScore",{
 						xtype: "togglefield",
 						label: "Zápas skončil",
 						name: "finished",
+            labelWidth:"45%",
+            ui: "decline",
             value: 0
 					},
 					{
 						xtype: "selectfield",
 						label: "Skóre domácí",
 						name: "score_home",
+            labelWidth:"45%",
 						options: []
 					},
           {
 						xtype: "selectfield",
 						label: "Skóre hosté",
-						name: "score_away",  
+						name: "score_away",
+            labelWidth:"45%",  
 						options: []
 					},
           {
 						xtype: "selectfield",
 						label: "Spirit domácí",
 						name: "spirit_home",
+            labelWidth:"45%",
 						options: []
 					},
           {
 						xtype: "selectfield",
 						label: "Spirit hosté",
 						name: "spirit_away",
+            labelWidth:"45%",
 						options: []
 					},
 					{
@@ -85,6 +91,6 @@ Ext.define("catcher.view.MatchDetailScore",{
           }
         ]
       }			
-		],														
+		]														
 	}				
 });

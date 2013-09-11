@@ -124,7 +124,7 @@ Ext.define('catcher.controller.Evidence', {
         if (team_id > 0) {
           var parent = evidence.findRecord("team_id", team_id, false, false, false, true);
           nl.goToNode(parent);
-          Ext.getCmp("addPlayer").show();
+          Ext.getCmp("connectPlayer").show();
         }
     }
 });
