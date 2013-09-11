@@ -1,6 +1,7 @@
 Ext.define("catcher.view.ScoreList", {
     extend : "Ext.List",
     xtype : "scoreList",
+    id: "scoreList",
     requires : [ "catcher.view.EditPointDetail" ],
     loadingText: "Aktualizuji data z www.frisbee.cz",
 
@@ -9,8 +10,9 @@ Ext.define("catcher.view.ScoreList", {
         title : "Skóre ",
         iconCls : "time",
         styleHtmlContent : true,
-        itemTpl : "Stav: {score_home}:{score_away}, <small>{time:date('G:i, j.n')}</small><br /><strong>S: {scoringPlayer}</strong><br />A: {assistPlayer}",
+        itemTpl : "Stav: {score_home}:{score_away}, <small>{time:date('G:i')}</small><br /><strong>S: {scoringPlayer}</strong><br />A: {assistPlayer}",
         onItemDisclosure : false,
+        emptyText: "Tým v zápase zatím neskóroval",
         listeners : {
             activate : function() {
                 this.getStore().sort();
