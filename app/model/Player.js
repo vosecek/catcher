@@ -24,6 +24,11 @@ Ext.define('catcher.model.Player', {
         }, {
             name : 'number',
             type : 'int'
+        } 
+        , {
+            name : 'type',
+            type : 'int',
+            defaultValue: 0
         } ]
     },
 

@@ -69,7 +69,7 @@ Ext.define('catcher.controller.MatchController', {
       })
     },
     
-    showMatchDetail : function(list, index,target,record) {      
+    showMatchDetail : function(list, index,target,record) {              
         Ext.getCmp("tournament").getTabBar().hide(); // skrytí hlavní navigace turnaje        
         var match = record;
         Ext.getCmp("matchesNavigation").query("button[navigation_only=true]").forEach(function(el){el.hide()}); // skrytí filtrovacích tlačítek 
@@ -78,6 +78,9 @@ Ext.define('catcher.controller.MatchController', {
             title : match.get("home_name_short") + " x " + match.get("away_name_short"),
             data : match.data
         });
+        
+        catcher.app.getController("MatchController").updateMatchPoints(match.get("match_id"),match.get("home_id"));
+        catcher.app.getController("MatchController").updateMatchPoints(match.get("match_id"),match.get("away_id"));
         
         var session = getSession();
         session.match_id = match.get("match_id");
@@ -115,10 +118,14 @@ Ext.define('catcher.controller.MatchController', {
           surname:"Hráč",
           player_id:0,
           team:session.score_team_id,
-          number:0
+          number:0,
+          type:1
         });
         MatchPlayerListScore.add(anonym);
         MatchPlayerListAssist.add(anonym);
+        
+        MatchPlayerListScore.sort("type","DESC");
+        MatchPlayerListAssist.sort("type","DESC");          
         
         if(players.getCount() == 0){
           this.addPointInternal(0,1);
@@ -144,14 +151,7 @@ Ext.define('catcher.controller.MatchController', {
         var MatchPlayerListAssist = Ext.getStore("MatchPlayerListAssist");                                                            
         
         // přidání CallahanGoal do nabídky pro asistenci
-        var callahan = Ext.create("catcher.model.Player",{
-          nick:"Callahan",
-          name:"Callahan",
-          surname:"Goal",
-          player_id:2147483647,
-          team:session.score_team_id,
-          number:0
-        });
+        var callahan = getCallahan();
                 
         MatchPlayerListAssist.add(callahan);                
         
@@ -236,6 +236,7 @@ Ext.define('catcher.controller.MatchController', {
     // nastavení počitadla u všech bodů konkrétního zápasu
     updateMatchPoints : function(match_id){
       var points = Ext.getStore("Points");
+      points.clearFilter();
       points.getProxy().setExtraParam("match_id",match_id);
       points.load(function(){
         points.getProxy().setExtraParams({});
@@ -251,6 +252,9 @@ Ext.define('catcher.controller.MatchController', {
             title : "Skóre " + match[team+"_name_short"],
             store : getTeamScore(match.match_id, match[team+"_id"])
         });
+        
+        var session = getSession();
+        session.showScoreTeamId = match[team+"_id"]; 
     },
 
     showEditPoint : function(list, record) {
@@ -264,9 +268,10 @@ Ext.define('catcher.controller.MatchController', {
         var coPlayers = getCoPlayers(point.team_id);
 
         var editPointDetail = this.getEditPointDetail();
-
-        editPointDetail.query("selectfield[name=scoringPlayer]")[0].setOptions(coPlayers).setValue(point.player_id);
+        
         editPointDetail.query("selectfield[name=assistPlayer]")[0].setOptions(coPlayers).setValue(point.assist_player_id);
+        coPlayers.splice(1,1);
+        editPointDetail.query("selectfield[name=scoringPlayer]")[0].setOptions(coPlayers).setValue(point.player_id);
         editPointDetail.query("hiddenfield[name=pointId]")[0].setValue(point.point_id);
     },
 
@@ -292,6 +297,10 @@ Ext.define('catcher.controller.MatchController', {
     },
 
     deletePoint : function() {
+      Ext.Viewport.setMasked({
+        xtype:"loadmask",
+        message:"Odstraňuji bod ze serveru"
+      });
         var values = this.getEditPointDetail().getValues();
         var points = Ext.getStore("Points");
         var matches = Ext.getStore("Matches");
@@ -302,7 +311,8 @@ Ext.define('catcher.controller.MatchController', {
         points.syncWithListener(function(){
           var controller = catcher.app.getController("MatchController");
           controller.updateMatchPoints(match_id);
-          controller.updateMatchInfo(match_id);
+          controller.updateMatchInfo(match_id,2);
+          Ext.Viewport.setMasked(false);
         });                               
     },
     
@@ -489,22 +499,53 @@ function fullNameInput(player) {
     return player.nick + " #" + player.number + " (" + player.surname + " " + player.name + ")";
 }
 
+function getAnonym(team){
+  return Ext.create("catcher.model.Player",{
+    nick:"Anonym",
+    name:"Anonymní",
+    surname:"Hráč",
+    player_id:0,
+    team:team,
+    number:0,
+    type:1
+  });  
+}
+
+function getCallahan(team){
+  return Ext.create("catcher.model.Player",{
+    nick:"Callahan",
+    name:"Callahan",
+    surname:"Goal",
+    player_id:2147483647,
+    team:team,
+    number:0,
+    type:1
+  });  
+}
+
 function getTeamScore(matchId, teamId) {
     var points = Ext.getStore("Points");
     points.clearFilter();
-    points.filter("match_id", matchId);
-    points.filter("team_id", teamId);
+    points.filterBy(function(item){
+      if(item.get("match_id") == matchId) return true
+    });
+    points.filterBy(function(item){
+      if(item.get("team_id") == teamId) return true
+    });    
 
-    var ScoreRoster = Ext.getStore("MatchPlayerListAssist");        
+    var ScoreRoster = Ext.getStore("Players");
+    
+    ScoreRoster.clearFilter();        
 
     var pointsToDisplay = new Array();
-    points.each(function(item, index, length) {
 
+    points.each(function(item, index, length) {
         var scoringPlayer = ScoreRoster.findRecord("player_id", new String(item.get("player_id")));
         var assistPlayer = ScoreRoster.findRecord("player_id", new String(item.get("assist_player_id")));
-        if(scoringPlayer == null) {
-          
-        }                  
+        if(item.get("player_id") == 0) scoringPlayer = getAnonym(teamId);                          
+        if(item.get("assist_player_id") == 2147483647) assistPlayer = getCallahan(teamId);
+        if(item.get("assist_player_id") == 0) assistPlayer = getAnonym(teamId);
+
         pointsToDisplay.push({          
             scoringPlayer : scoringPlayer != null ? fullName(scoringPlayer.data) : "nezadáno",
             assistPlayer : assistPlayer != null ? fullName(assistPlayer.data) : "nezadáno",
@@ -513,6 +554,7 @@ function getTeamScore(matchId, teamId) {
             score_home: item.get("score_home"),
             score_away: item.get("score_away")              
         });
+
     });            
 
     Ext.define("PointView", {
@@ -558,7 +600,13 @@ function getCoPlayers(team) {
     players.clearFilter();
     players.filter("team", team);
 
-    var coPlayers = new Array();        
+    var coPlayers = new Array();
+    
+    var anonym = getAnonym(team);    
+    var callahan = getCallahan(team);
+    
+    coPlayers.push(createPlayerOption(anonym.data));        
+    coPlayers.push(createPlayerOption(callahan.data));
 
     players.each(function(item, index, length) {
         var player = item.data;
