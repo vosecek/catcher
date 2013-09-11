@@ -40,7 +40,7 @@ Ext.define("catcher.view.TeamRoster", {
                   var list = this.up("teamRoster");
                   var store = list.getStore();
                   var roster = list.getSelection();
-                  var active_team = Ext.getCmp("addPlayer").target;
+                  var active_team = Ext.getCmp("connectPlayer").target;
                   var modalPanel = list.up("modalPanel");
                   
                   var length = roster.length;
@@ -81,7 +81,7 @@ Ext.define("catcher.view.TeamRoster", {
         listeners : {
             painted : function() {
               var store = this.getStore();              
-              var active_team = Ext.getCmp("addPlayer").target;              
+              var active_team = Ext.getCmp("connectPlayer").target;              
               var active_team_master = Ext.getStore("Teams").findRecord("team_id",active_team,false,false,false,true).get("master_id");
               var list = this;
               store.clearFilter();
