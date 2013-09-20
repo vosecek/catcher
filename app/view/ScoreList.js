@@ -12,7 +12,7 @@ Ext.define("catcher.view.ScoreList", {
         styleHtmlContent : true,
         itemTpl : "Stav: {score_home}:{score_away}, <small>{time:date('G:i')}</small><br /><strong>S: {scoringPlayer}</strong><br />A: {assistPlayer}",
         onItemDisclosure : false,
-        emptyText: "Tým v zápase zatím neskóroval",
+        emptyText: "V zápase zatím nepadly žádné body.",
         listeners : {
             activate : function() {
                 this.getStore().sort();

@@ -6,38 +6,48 @@ Ext.define("catcher.view.MatchDetailCounter", {
     title : "Zápas",
     iconCls : "compose",
     id: "matchDetailCounter",
-    layout : "vbox",
+    layout: "vbox",
+    height: "380px",
+    scrollable: {
+        direction: 'vertical'
+    },
     styleHtmlContent : true,
     
     items : [{
-        xtype : "segmentedbutton",
-        layout : {
-            align : "stretchmax",
-            pack : "center",
-            type : "hbox"
+        xtype : "container",
+        layout : "hbox",
+        flex: 2,
+        style : "font-size: 7em",
+        defaults:{
+          style: {
+            "text-align": "center",
+            "font-family": "Digital-7",
+            "line-height": "1.2em"
+          }
         },
-        style : "font-size: 3em",
         items : [ {
-            xtype : "button",
+            xtype : "label",
             flex : 1,
-            name : "scoreHome",
-            text : "[home]",
-            ui: "home"
+            name : "score_home",
+            html : "" 
         }, {
-            xtype : "button",
+            xtype : "label",
             flex : 1,
-            name : "scoreAway",
-            text : "[away]",
-            ui: "away"
+            name : "score_away",
+            html : ""
         } ]
     }, {
         xtype : "segmentedbutton",
+        flex: 2,
         layout : {
             align : "stretchmax",
             pack : "center",
             type : "hbox"
         },
-        style : "font-size: 5em; margin-top : 20px",
+        style : {
+          "font-size": "4em"
+//           "margin-top : 20px"
+        },
         items : [ {
             xtype : "button",
             flex : 1,
@@ -51,6 +61,13 @@ Ext.define("catcher.view.MatchDetailCounter", {
             text : "+",
             ui: "away"
         }]
+      },{
+        xtype: "button",
+        flex: 1,
+        text: "Zobraz zapsané body",
+        ui: "confirm",
+        name : "matchScore",
+        style : "font-size:140%; margin-top : 20px"
       }],
       listeners : {
         painted : function(){

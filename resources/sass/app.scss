@@ -43,3 +43,6 @@
 // tlačítka
 @include sencha-button-ui('home', #B1CEDE , 'matte');
 @include sencha-button-ui('away', #DEC1B1 , 'matte');
+
+@import "compass/css3";
+@include font-face("Digital-7", font-files("digital-7.ttf", "digital-7.otf"));

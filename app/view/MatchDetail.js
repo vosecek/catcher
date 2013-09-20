@@ -3,8 +3,7 @@ Ext.define("catcher.view.MatchDetail", {
     xtype : "matchDetail",            
 
     config : {
-      id : "matchDetail",
-      styleHtmlContent : true,
+      id : "matchDetail",      
       layout : {
         animation:false
       },

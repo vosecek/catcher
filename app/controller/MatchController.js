@@ -29,10 +29,7 @@ Ext.define('catcher.controller.MatchController', {
                 itemsingletap : "addPoint"
 //                 select: "addPoint"
             },
-            "matchDetail button[name=scoreHome]" : {
-                tap : "showScore"
-            },
-            "matchDetail button[name=scoreAway]" : {
+            "matchDetail button[name=matchScore]" : {
                 tap : "showScore"
             },
             "matchDetail button[name=addPointHome]" : {
@@ -61,8 +58,11 @@ Ext.define('catcher.controller.MatchController', {
         if(response == "yes"){
           var store = el.getStore();
           store.remove(record);
-          store.sync();
-          Ext.Msg.alert("OK","Zápas odstraněn");                    
+          Ext.Viewport.setMasked({xtype:"loadmask",message:"Mažu zápas na serveru"});
+          store.syncWithListener(function(){
+            Ext.Msg.alert("OK","Zápas odstraněn");
+            Ext.Viewport.setMasked(false);
+          });                              
         }
         el.resumeEvents(true);
         el.deselectAll();
@@ -246,15 +246,11 @@ Ext.define('catcher.controller.MatchController', {
     showScore : function(event) {
         var matchId = Ext.getStore("Session").findRecord("uuid", Ext.device.Device.uuid).match_id;
         var match = Ext.getStore("Matches").findRecord("match_id", matchId, false, false, false, true).data;
-        var team = event.getUi();
         this.getMatchesNavigation().push({
             xtype : "scoreList",
-            title : "Skóre " + match[team+"_name_short"],
-            store : getTeamScore(match.match_id, match[team+"_id"])
-        });
-        
-        var session = getSession();
-        session.showScoreTeamId = match[team+"_id"]; 
+            title : "Skóre " + match["away_name_short"]+" vs. "+match["away_name_short"],
+            store : getMatchScore(match.match_id)
+        });                 
     },
 
     showEditPoint : function(list, record) {
@@ -285,11 +281,12 @@ Ext.define('catcher.controller.MatchController', {
           xtype:"loadmask",
           message: "aktualizuji bod na frisbee.cz"
         });
+        Ext.getStore("Players").clearFilter();
         Ext.getStore("Points").syncWithListener(function(){
           var controller = catcher.app.getController("MatchController");          
           var matchId = Ext.getStore("Session").findRecord("uuid", Ext.device.Device.uuid).match_id;
           var scoringPlayer = Ext.getStore("Players").findRecord("player_id", values.scoringPlayer,false,false,false,true).data;
-          controller.getScoreList().setStore(getTeamScore(matchId, scoringPlayer.team));
+          controller.getScoreList().setStore(getMatchScore(matchId));
           controller.getScoreList().deselectAll();
           Ext.Viewport.setMasked(false);
           controller.getMatchesNavigation().pop();
@@ -303,8 +300,8 @@ Ext.define('catcher.controller.MatchController', {
       });
         var values = this.getEditPointDetail().getValues();
         var points = Ext.getStore("Points");
-        var matches = Ext.getStore("Matches");
-        var remove = points.findRecord("point_id", values.pointId,false,false,false,true);
+        var matches = Ext.getStore("Matches");        
+        var remove = points.findRecord("point_id", values.pointId,false,false,false,true);        
         var match_id = remove.get("match_id");
                 
         points.remove(remove);        
@@ -313,15 +310,33 @@ Ext.define('catcher.controller.MatchController', {
           controller.updateMatchPoints(match_id);
           controller.updateMatchInfo(match_id,2);
           Ext.Viewport.setMasked(false);
-        });                               
-    },
+        });
+        
+//         if(remove.get("match_id")                               
+    },    
     
     fillMatchDetail : function(match){            
-      this.getMatchDetail().query("button[name=scoreHome]")[0].setText(new String(match.get("score_home")));
-      this.getMatchDetail().query("button[name=scoreAway]")[0].setText(new String(match.get("score_away")));
+      var home = this.getMatchDetail().query("label[name=score_home]")[0];
+      var away = this.getMatchDetail().query("label[name=score_away]")[0];
+            
+      function updateCounter(counter){
+        if(counter.getHtml() != match.get(counter.config.name) && counter.getHtml()!=""){
+          counter.setStyle("color:red");                
+          setTimeout(function(){
+            counter.setHtml(match.get(counter.config.name));
+            setTimeout(function(){
+              counter.setStyle("color:black;");
+            },1000);
+          },1000);                        
+        }else{
+          counter.setHtml(match.get(counter.config.name));
+        }
+      }
       
-      getTeamScore(match.get("match_id"),match.get("home_id"));
-      getTeamScore(match.get("match_id"),match.get("away_id"));
+      updateCounter(home);
+      updateCounter(away);
+
+      getMatchScore(match.get("match_id"));
       Ext.getStore("Points").clearFilter();
     },
 
@@ -391,12 +406,7 @@ Ext.define('catcher.controller.MatchController', {
       return options;
     },
     
-    updateMatchScore : function(){
-      Ext.Viewport.setMasked({
-          xtype : 'loadmask',
-          message : 'Ukládám informace o zápase'
-      });
-      
+    updateMatchScore : function(){            
       var form = this.getMatchDetailScore();
       values = form.getValues(true, true);
       
@@ -417,8 +427,12 @@ Ext.define('catcher.controller.MatchController', {
       Ext.Msg.confirm("Zadávaný výsledek",match.get("home_name_short")+" vs. "+match.get("away_name_short")+": "+values.score_home+":"+values.score_away,function(response){
         if(response == "yes"){                       
           if(diffs_fatal.length > 0){
-            Ext.Msg.alert("Nižší skóre",diffs_fatal.join("<br />"));
+            Ext.Msg.alert("Nižší skóre",diffs_fatal.join("<br />"));            
           }else{
+            Ext.Viewport.setMasked({
+                xtype : 'loadmask',
+                message : 'Ukládám informace o zápase'
+            });
             if(diffs.length > 0){
               Ext.Msg.confirm("Vyšší skóre",diffs.join("<br />"),function(response){              
                 if(response == "yes") {              
@@ -500,6 +514,7 @@ function fullNameInput(player) {
 }
 
 function getAnonym(team){
+  if(typeof team == "undefined") team = 0;
   return Ext.create("catcher.model.Player",{
     nick:"Anonym",
     name:"Anonymní",
@@ -523,14 +538,11 @@ function getCallahan(team){
   });  
 }
 
-function getTeamScore(matchId, teamId) {
+function getMatchScore(matchId) {
     var points = Ext.getStore("Points");
     points.clearFilter();
     points.filterBy(function(item){
       if(item.get("match_id") == matchId) return true
-    });
-    points.filterBy(function(item){
-      if(item.get("team_id") == teamId) return true
     });    
 
     var ScoreRoster = Ext.getStore("Players");
@@ -540,11 +552,11 @@ function getTeamScore(matchId, teamId) {
     var pointsToDisplay = new Array();
 
     points.each(function(item, index, length) {
-        var scoringPlayer = ScoreRoster.findRecord("player_id", new String(item.get("player_id")));
-        var assistPlayer = ScoreRoster.findRecord("player_id", new String(item.get("assist_player_id")));
-        if(item.get("player_id") == 0) scoringPlayer = getAnonym(teamId);                          
-        if(item.get("assist_player_id") == 2147483647) assistPlayer = getCallahan(teamId);
-        if(item.get("assist_player_id") == 0) assistPlayer = getAnonym(teamId);
+        var scoringPlayer = ScoreRoster.findRecord("player_id", new String(item.get("player_id")),false,false,false,true);
+        var assistPlayer = ScoreRoster.findRecord("player_id", new String(item.get("assist_player_id")),false,false,false,true);
+        if(item.get("player_id") == 0) scoringPlayer = getAnonym();                          
+        if(item.get("assist_player_id") == 2147483647) assistPlayer = getCallahan();
+        if(item.get("assist_player_id") == 0) assistPlayer = getAnonym();
 
         pointsToDisplay.push({          
             scoringPlayer : scoringPlayer != null ? fullName(scoringPlayer.data) : "nezadáno",
