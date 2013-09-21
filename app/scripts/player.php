@@ -26,17 +26,16 @@ class player{
     $this->player2tournament = $subteam["id"]; 
   }
   
-  function computeStats($save = false){
+  function computeStats(){
     $matches = $this->db->mod_catcher_matches()->select("id")->where("home_id = ".$this->subteam." OR away_id = ".$this->subteam)->where("tournament_id",$this->tournament)->fetchPairs("id","id"); 
     $this->count_score = $this->db->mod_catcher_points()->where("match_id",$matches)->where("player_id",$this->player_id)->count();
     $this->count_assist = $this->db->mod_catcher_points()->where("match_id",$matches)->where("assist_player_id",$this->player_id)->count();
     $this->count_matches = count($matches);
-    if($save == true) $this->save();            
+    $update = array("count_score"=>$this->count_score,"count_assist"=>$this->count_assist,"count_matches"=>$this->count_matches);        
+    $this->db->mod_catcher_player2tournament("id",$this->player2tournament)->update($update);            
   }
   
-  function save(){
-    $update = array("count_score"=>$this->count_score,"count_assist"=>$this->count_assist);    
-    $this->db->mod_catcher_player2tournament("id",$this->player2tournament)->update($update);
+  function save(){    
     $update = array("name"=>$this->name,"surname"=>$this->surname,"number"=>$this->number,"nick"=>$this->nick);    
     $this->db->mod_catcher_players("id",$this->player_id)->update($update);
   }
