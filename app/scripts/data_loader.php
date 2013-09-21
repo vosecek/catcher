@@ -107,13 +107,17 @@ if($method == "POST"){ // insert dat ve storu
     
 
   switch($store){
-    case "matches":      
-      mysql_query("INSERT INTO mod_catcher_$store (tournament_id,home_id,away_id,field,length,time,skupina) VALUES ($tournament_id,$data[home_id],$data[away_id],$data[field],'$data[length]',$data[time],'$data[skupina]')");
-      $id = mysql_insert_id();
-      $radek = mysql_fetch_array(mysql_query("SELECT * FROM mod_catcher_$store WHERE id='$id'"));
-      $output["match_id"] = $radek["id"];
-      $output["time"] = $radek["time"];      
-      
+    case "matches":
+      if(NotORM::make()->mod_catcher_matches->where("home_id",$data["home_id"])->where("away_id",$data["away_id"])->where("skupina",$data["skupina"])->count() == 0){
+        mysql_query("INSERT INTO mod_catcher_$store (tournament_id,home_id,away_id,field,length,time,skupina) VALUES ($tournament_id,$data[home_id],$data[away_id],$data[field],'$data[length]',$data[time],'$data[skupina]')");
+        $id = mysql_insert_id();
+        $radek = mysql_fetch_array(mysql_query("SELECT * FROM mod_catcher_$store WHERE id='$id'"));
+        $output["match_id"] = $radek["id"];
+        $output["time"] = $radek["time"];      
+      }else{        
+        $output["success"] = true;
+        $output["stav"] = "již vloženo";
+      }                        
     break;
     case "points":
       // zahazujeme bod, pokud už tam je, což by se nemìlo stát, prùbìžnì logujeme    
@@ -156,9 +160,7 @@ if($method == "PUT"){ // update dat ve storu
     
 		case "players":
       $player = new player($data["player_id"],$tournament->id,$data);
-      $player->computeStats(true);
-      $output["order_score"] = $player->order_score;
-      $output["order_assist"] = $player->order_assist;
+      $player->save();
       $output["dirty"] = false;
       $output["sucess"] = true;						
 		break;
@@ -204,6 +206,7 @@ if($method == "DELETE"){ // budeme nìco mazat ze storu
     case "matches":      
       mysql_query("DELETE FROM $tab5 WHERE id = '$data[match_id]'");      
       mysql_query("DELETE FROM $tab6 WHERE match_id = '$data[match_id]'");
+      $output["success"]="true";
     break;
 	}
 }

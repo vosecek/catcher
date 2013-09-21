@@ -99,8 +99,7 @@ Ext.define("catcher.view.EditorPanel",{
                 store.add(match);                                
                 store.syncWithListener(function(){
                   store.load(function(){
-                    Ext.Viewport.setMasked(false);
-//                     Ext.Msg.alert("OK","Zápas uložen");                  
+                    Ext.Viewport.setMasked(false);                
                   });
                 });
                }                              

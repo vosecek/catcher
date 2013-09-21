@@ -59,7 +59,7 @@ Ext.define('catcher.controller.MatchController', {
           var store = el.getStore();
           store.remove(record);
           Ext.Viewport.setMasked({xtype:"loadmask",message:"Mažu zápas na serveru"});
-          store.syncWithListener(function(){
+          store.syncWithListener(function(response){            
             Ext.Msg.alert("OK","Zápas odstraněn");
             Ext.Viewport.setMasked(false);
           });                              
