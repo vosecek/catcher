@@ -124,8 +124,31 @@ Ext.define('catcher.controller.MatchController', {
         MatchPlayerListScore.add(anonym);
         MatchPlayerListAssist.add(anonym);
         
-        MatchPlayerListScore.sort("type","DESC");
-        MatchPlayerListAssist.sort("type","DESC");          
+        MatchPlayerListScore.sort([
+          {
+            "property":"type",
+            "direction":"DESC"
+          },{
+            "property":"order_score",
+            "direction":"DESC"
+          },{
+            "property":"nick",
+            "direction":"ASC"
+          }
+        ]);
+        
+        MatchPlayerListAssist.sort([
+          {
+            "property":"type",
+            "direction":"DESC"
+          },{
+            "property":"order_assist",
+            "direction":"DESC"
+          },{
+            "property":"nick",
+            "direction":"ASC"
+          }
+        ]);          
         
         if(players.getCount() == 0){
           this.addPointInternal(0,1);
@@ -215,7 +238,24 @@ Ext.define('catcher.controller.MatchController', {
             var controller = catcher.app.getController("MatchController");                        
             controller.updateMatchPoints(point.get("match_id"));            
             controller.updateMatchInfo(point.get("match_id"),pop_level);
+            controller.updateTeamPlayers(point.get("team_id"));
           });                                                                                                                                                                                                          
+    },
+    
+    updateTeamPlayers : function(team){
+      var players = Ext.getStore("Players");
+      players.filterBy(function(item){
+        if(item.get("team") == team) {          
+          item.setDirty();
+          return true;
+        }
+      });
+      
+      console.log(players);
+      
+      players.syncWithListener(function(){
+        players.clearFilter();        
+      });
     },
     
     updateMatchInfo : function(match_id,pop_level){

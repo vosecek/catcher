@@ -23,9 +23,14 @@ Ext.define('catcher.model.Player', {
             type : 'int'
         }, {
             name : 'number',
+            type : 'int'        
+        }, {
+            name : 'order_score',
             type : 'int'
-        } 
-        , {
+        }, {
+            name : 'order_assist',
+            type : 'int'
+        }, {
             name : 'type',
             type : 'int',
             defaultValue: 0
