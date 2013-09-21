@@ -11,14 +11,14 @@ Ext.define("catcher.view.PlayersDetail",{
 			{
 				xtype: "fieldset",
 				title: "Informace o hráči",
-				instructions: "Zadej číslo hráče a přezdívku, nic jiného se měnit běžně nemusí. Změna se projeví i na online výsledcích!",
+				instructions: "Zadej číslo hráče a přezdívku, nic jiného se měnit běžně nemusí. Změna je platná i pro jiné turnaje!",
 				
 				items:	[
 					{
-						xtype: "numberfield",
+						xtype: "selectfield",
 						label: "Číslo hráče",
 						name: "number",
-						value:""
+						options:[]
 					},
           {
 						xtype: "textfield",

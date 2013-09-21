@@ -50,17 +50,17 @@ Ext.define('catcher.controller.Evidence', {
 
     showPlayer : function(list, record) {
 
-
         // naplnit hráčovu kartičku
         if(typeof record.raw == "undefined") record.raw = record.data.data;
-
-        this.getKarticka().setValues({          
-            name : record.raw.name,
-            surname : record.raw.surname,
-            player_id : record.raw.player_id,
-            nick : record.raw.nick,
-            number: record.raw.number
-        });
+        this.getKarticka().setValues(record.raw);        
+        var numbers = new Array;
+        for(i = 0;i<100;i++){
+          numbers.push({
+            text:i,
+            value:i
+          });
+        } 
+        this.getKarticka().query("selectfield[name=number]")[0].setOptions(numbers).setValue(record.raw.number);
     },
     
     composeTeams: function(){
