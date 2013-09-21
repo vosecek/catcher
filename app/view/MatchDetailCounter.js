@@ -7,10 +7,7 @@ Ext.define("catcher.view.MatchDetailCounter", {
     iconCls : "compose",
     id: "matchDetailCounter",
     layout: "vbox",
-    height: "380px",
-    scrollable: {
-        direction: 'vertical'
-    },
+    height: "100%",    
     styleHtmlContent : true,
     
     items : [{
@@ -45,8 +42,8 @@ Ext.define("catcher.view.MatchDetailCounter", {
             type : "hbox"
         },
         style : {
-          "font-size": "4em"
-//           "margin-top : 20px"
+          "font-size": "4em",
+          "margin-top" : "20px"
         },
         items : [ {
             xtype : "button",
