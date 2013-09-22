@@ -427,8 +427,16 @@ Ext.define('catcher.controller.MatchController', {
       var tournament_data = Ext.getStore("Tournaments").findRecord("tournament_id",session.get("tournament_id"),false,false,true);
       var fields2push = this.composeSelect(tournament_data.get("fields"),"fields");      
       var skupiny2push = this.composeSelect(tournament_data.get("skupiny"),"skupina");
+      var times = new Array;
+      for(i = 20;i<95;i = i + 5){
+        times.push({
+          text:i+" minut",
+          value:i
+        });
+      }
       formular.query("selectfield[name=field]")[0].setOptions(fields2push).setValue(match.get("field"));            
       formular.query("selectfield[name=skupina]")[0].setOptions(skupiny2push).setValue(match.get("skupina"));
+      formular.query("selectfield[name=length]")[0].setOptions(times).setValue(match.get("length"));
     },
     
     composeSelect:function(input,type){
@@ -539,6 +547,22 @@ Ext.define('catcher.controller.MatchController', {
       var match = matches.findRecord("match_id",values.match_id,false,false,true);
       
       saveMatchSettings(match,values);                                                
+    },
+    
+    checkUnfinishedMatches : function (store){
+      store.each(function(record){                      
+        if(record.get("finished") == false){
+          var length = record.get("length")*60*1000;
+          var cap = 1200000;
+          if(record.get("time").getTime()+length+cap < new Date().getTime()){
+            Ext.Msg.confirm("Neukončený zápas","Zápas "+record.get("home_name_short")+" vs. "+record.get("away_name_short")+" není ukončený a zřejmě již skončil. Klikem na Yes přejdeš do detailu zápasu a po zkontrolování výsledného skóre jej ukončíš.",function(response){
+              if(response == "yes"){
+                catcher.app.getController("MatchController").showMatchDetail(false,false,false,record,true);
+              }
+            });
+          }
+        }
+      });
     }
 });
 

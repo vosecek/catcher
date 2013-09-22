@@ -37,10 +37,11 @@ Ext.define("catcher.view.MatchDetailSettings",{
 						options: []
 					},
           {
-						xtype: "numberfield",
+						xtype: "selectfield",
 						label: "Délka utkání [min]",
             labelWidth: "45%",
-						name: "length"
+						name: "length",
+            options:[]
 					},          
           {
 						xtype: "datetimepickerfield",

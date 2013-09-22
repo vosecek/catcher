@@ -40,13 +40,21 @@ Ext.define("catcher.view.MainNavigation",{
               var fields2push = catcher.app.getController("MatchController").composeSelect(tournament.get("fields"));
               var skupiny2push = catcher.app.getController("MatchController").composeSelect(tournament.get("skupiny"),"skupina");
               var teams = catcher.app.getController("Evidence").composeTeams();
+              var times = new Array;
+              for(i = 20;i<95;i = i + 5){
+                times.push({
+                  text:i+" minut",
+                  value:i
+                });
+              }
+              
               formPanel.query("selectfield[name=field]")[0].setOptions(fields2push);
               formPanel.query("selectfield[name=skupina]")[0].setOptions(skupiny2push);
               formPanel.query("selectfield[name=home_id]")[0].setOptions(teams);
               formPanel.query("selectfield[name=away_id]")[0].setOptions(teams);
+              formPanel.query("selectfield[name=length]")[0].setOptions(times);
               formPanel.setValues({
-                time:new Date(),
-                length: tournament.get("default_length")
+                time:new Date()                
               });
               this.up("actionSheet").hide();                
               editorPanel.show();    

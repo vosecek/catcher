@@ -45,10 +45,11 @@ Ext.define("catcher.view.EditorPanel",{
             labelWidth: "40%",
 						options: []
 					},{
-						xtype: "numberfield",
+						xtype: "selectfield",
 						label: "Délka utkání [min]",
             labelWidth: "40%",
-						name: "length"
+						name: "length",
+            options: []
 					},{
 						xtype: "datetimepickerfield",
             dateTimeFormat: "j.n.Y H:i",
