@@ -17,13 +17,17 @@ class tournament{
     }
     
     $query = $this->db->mod_catcher_player2tournament()->where("subteam_id",$data["team_id"])->order("count_score DESC")->limit(3);
+    $i=3;
     foreach($query as $value){
-      $this->db->mod_catcher_player2tournament()->where("id",$value["id"])->update(array("order_score"=>1));
+      $this->db->mod_catcher_player2tournament()->where("id",$value["id"])->update(array("order_score"=>$i));
+      $i--;
     }
-      
+    
+    $i=3;  
     $query = $this->db->mod_catcher_player2tournament()->where("subteam_id",$data["team_id"])->order("count_assist DESC")->limit(3);
     foreach($query as $value){
-      $this->db->mod_catcher_player2tournament()->where("id",$value["id"])->update(array("order_assist"=>1));
+      $this->db->mod_catcher_player2tournament()->where("id",$value["id"])->update(array("order_assist"=>$i));
+      $i--;
     }
   }
 }

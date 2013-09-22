@@ -161,6 +161,8 @@ if($method == "PUT"){ // update dat ve storu
 		case "players":
       $player = new player($data["player_id"],$tournament->id,$data);
       $player->save();
+      $output["order_score"] = $player->order_score;
+      $output["order_assist"] = $player->order_assist;
       $output["dirty"] = false;
       $output["sucess"] = true;						
 		break;
