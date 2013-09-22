@@ -72,6 +72,9 @@ Ext.define("catcher.view.MatchDetailCounter", {
             var pressedCls = "x-button-pressed";         
             c.removeCls(pressedCls);
           });
+          if(Ext.device.Connection.isOnline() == false){
+            Ext.Msg.alert("Offline","Zřejmě nejsi připojen k internetu, aplikace nebude fungovat správně.");
+          }
         }          
       }
     }      
