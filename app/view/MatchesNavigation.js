@@ -46,7 +46,7 @@ Ext.define("catcher.view.MatchesNavigation", {
             var actionSheet = Ext.getCmp("actionSheet") || new catcher.view.MainNavigation();
             if(!actionSheet.getParent()) Ext.Viewport.add(actionSheet);
             actionSheet.hide();
-            this.prepareActionSheet(actionSheet,this.getActiveItem());
+            this.prepareActionSheet(actionSheet,this.getActiveItem());            
           }
         }
     },

@@ -69,7 +69,8 @@ Ext.define('catcher.controller.MatchController', {
       })
     },
     
-    showMatchDetail : function(list, index,target,record) {              
+    showMatchDetail : function(list,index,target,record,toFinish) {
+      if(typeof toFinish == "undefined") toFinish = false;              
         Ext.getCmp("tournament").getTabBar().hide(); // skrytí hlavní navigace turnaje        
         var match = record;
         Ext.getCmp("matchesNavigation").query("button[navigation_only=true]").forEach(function(el){el.hide()}); // skrytí filtrovacích tlačítek 
@@ -86,6 +87,10 @@ Ext.define('catcher.controller.MatchController', {
         session.match_id = match.get("match_id");
         
         this.fillMatchDetail(match);
+        if(toFinish == true) {
+          var button = Ext.getCmp("actionSheet").query("button[iconCls=check2]")[0]; 
+          button._handler();
+        }
                 
     },
 
@@ -197,13 +202,19 @@ Ext.define('catcher.controller.MatchController', {
         var MatchPlayerListAssist = Ext.getStore("MatchPlayerListAssist").findRecord("player_id", assist_player_id, false, false, false, true).data;
         var message = "Bod: " + fullName(MatchPlayerListScore) + "<br />Asistence: " + fullName(MatchPlayerListAssist);
 
-        Ext.Msg.confirm("Zadat bod?", message, function(response) {
-            if (response == "yes") {
-                catcher.app.getController("MatchController").addPointInternal(assist_player_id,2);
-            }else{
-              list.deselectAll();
+        Ext.device.Notification.show({
+            title: 'Zadat bod?',
+            message: message,
+            buttons: Ext.MessageBox.OKCANCEL,
+            callback: function(button) {
+                if (button == "ok") {
+                    catcher.app.getController("MatchController").addPointInternal(assist_player_id,2);
+                } else {
+                    list.deselectAll();
+                }
             }
         });
+        
         list.setDisableSelection(false);
     },
 
@@ -251,7 +262,7 @@ Ext.define('catcher.controller.MatchController', {
         }
       });
       
-      console.log(players);
+//       console.log(players);
       
       players.syncWithListener(function(){
         players.clearFilter();        
@@ -458,10 +469,10 @@ Ext.define('catcher.controller.MatchController', {
       
       if(values.score_home !== undefined){
         if(values.score_home < match.get("score_home")) diffs_fatal.push("Skóre "+match.get("home_name_short")+" je menší než počet uložených bodů ("+match.get("score_home")+"), pro uložení zápasu smaž některé body!");
-        if(values.score_home > match.get("score_home")) diffs.push("Skóre "+match.get("home_name_short")+" je větší než počet uložených bodů ("+match.get("score_home")+"), při uložení dojde k vygenerování anonymních bodů. Opravdu?");
+        if(values.score_home > match.get("score_home")) diffs.push("Existující skóre "+match.get("home_name_short")+": "+match.get("score_home")+", vkládané: "+values.score_home);
         
-        if(values.score_away < match.get("score_away")) diffs_fatal.push("Skóre "+match.get("away_name_short")+" je menší než počet uložených bodů ("+match.get("score_away")+"), pro uložení zápasu smaž některé body!");
-        if(values.score_away > match.get("score_away")) diffs.push("Skóre "+match.get("away_name_short")+" je větší než počet uložených bodů ("+match.get("score_away")+"), při uložení dojde k vygenerování anonymních bodů. Opravdu?"); 
+        if(values.score_away < match.get("score_away")) diffs_fatal.push("Existující skóre "+match.get("away_name_short")+" je menší než počet uložených bodů ("+match.get("score_away")+"), pro uložení zápasu smaž některé body!");
+        if(values.score_away > match.get("score_away")) diffs.push("Existující skóre "+match.get("away_name_short")+": "+match.get("score_away")+", vkládané: "+values.score_away); 
       }
       
       Ext.Msg.confirm("Zadávaný výsledek",match.get("home_name_short")+" vs. "+match.get("away_name_short")+": "+values.score_home+":"+values.score_away,function(response){
@@ -474,7 +485,7 @@ Ext.define('catcher.controller.MatchController', {
                 message : 'Ukládám informace o zápase'
             });
             if(diffs.length > 0){
-              Ext.Msg.confirm("Vyšší skóre",diffs.join("<br />"),function(response){              
+              Ext.Msg.confirm("Vyšší skóre","Zadané skóre je vyšší než naskórované, vytvořím anonymní body, opravdu?<br />"+diffs.join("<br />"),function(response){              
                 if(response == "yes") {              
                   var points = Ext.getStore("Points");              
                   function equalizer(difference,team_id,match_id){
