@@ -19,7 +19,7 @@ Ext.define("catcher.view.MatchDetailScore",{
 		items:[
 			{
 				xtype: "fieldset",
-				instructions : "Spirit ve formátu kolik tým obdržel, ne kolik udělil. <br /> Výsledné skóre lze přepsat, body budou vloženy jako anonymní.",
+				instructions : "Po konci času přepni Zápas skončil. <br />Spirit ve formátu kolik tým obdržel, ne kolik udělil. <br /> Výsledné skóre lze přepsat, body budou vloženy jako anonymní.",
 				
 				items:	[
           {

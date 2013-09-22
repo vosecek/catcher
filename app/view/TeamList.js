@@ -133,7 +133,7 @@ Ext.define('catcher.view.TeamList', {
 					addPlayer.show(); // zobrazit, jsme na výpisu týmu, předchozí node byl leaf
           connectPlayer.show();
 				}else{					
-					addPlayer.hide(); // skrýt add button, předchozí node byla soupiska týmu a jsme na přehledu týmů
+// 					addPlayer.hide(); // skrýt add button, předchozí node byla soupiska týmu a jsme na přehledu týmů
           connectPlayer.hide();
 				} 
 			}			
