@@ -284,6 +284,7 @@ if($method == "GET"){ // stažení dat, rùzné prùbìžné aktualizaèní požadavky
         }
                 
   			foreach($cols[$store] as $index=>$value){
+          if(!isset($data[$value])) continue;
   	    	$data[$value] = convert($data[$value]);          
   	    	$tmp[$index] = $data[$value];
   	  	}                
@@ -304,6 +305,7 @@ if($method == "GET"){ // stažení dat, rùzné prùbìžné aktualizaèní požadavky
     if(isset($vysledek2)){
       while($data = mysql_fetch_array($vysledek2)){        
         foreach($cols[$store] as $index=>$value){
+          if(!isset($data[$value])) continue; 
   	    	$data[$value] = convert($data[$value]);          
   	    	$tmp[$index] = $data[$value];
   	  	}
