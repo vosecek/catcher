@@ -42,20 +42,20 @@ Ext.define("catcher.view.MatchDetailCounter", {
             type : "hbox"
         },
         style : {
-          "font-size": "4em",
+          "font-size": "200%",
           "margin-top" : "20px"
         },
         items : [ {
             xtype : "button",
             flex : 1,
             name : "addPointHome",
-            text : "+",
+            iconCls: "add",
             ui: "home"
         }, {
             xtype : "button",
             flex : 1,
             name : "addPointAway",
-            text : "+",
+            iconCls: "add",
             ui: "away"
         }]
       },{
