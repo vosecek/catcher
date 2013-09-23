@@ -205,10 +205,9 @@ Ext.define("catcher.view.MainNavigation",{
         {
           text : "Aktualizovat data ze serveru",                
           iconCls : "refresh",
-          matchesList: true,
+//           matchesList: true,
           matchDetail: true,
-          scoreList:true,
-          margin: "1em 0em 0.5em 0em",
+//           scoreList:true,          
           ui:"confirm",                                          
           handler : function() {
               this.up("actionSheet").hide();                        
@@ -253,6 +252,7 @@ Ext.define("catcher.view.MainNavigation",{
             text: 'Zavřít menu',
             ui:"action",
             iconCls: "close",
+            margin: "1em 0em 0.5em 0em",
             all: true,
             handler:function(){
               this.up("actionSheet").hide();
