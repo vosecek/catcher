@@ -51,16 +51,23 @@ Ext.define("catcher.view.MatchesNavigation", {
         }
     },
     
-    prepareActionSheet:function(actionSheet,activeItem){
+    prepareActionSheet:function(actionSheet,activeItem){      
       activeItem = activeItem.getId()
-//       console.log(activeItem);
+      var buttons = 0;
       actionSheet.query("button").forEach(function(el){        
         if(el.config[activeItem] == true || el.config["all"] == true) {
           el.show();
+          buttons = buttons + 1;
         }else{
           el.hide();
         }
-      });
+      });      
+      
+      if(buttons == 1) {
+        Ext.getCmp("menu").hide();
+      }else{
+        Ext.getCmp("menu").show();
+      }
     },
     
     showInfo:function(show,msg){

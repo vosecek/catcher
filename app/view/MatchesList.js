@@ -6,7 +6,13 @@ Ext.define("catcher.view.MatchesList", {
         title : "Zápasy",
         iconCls : "time",
         styleHtmlContent : true,
-        id : "matchesList",      
+        id : "matchesList",
+        
+        plugins: [{
+            xclass: 'Ext.plugin.PullRefresh',
+            pullRefreshText: 'Táhni pro aktualizaci zápasů.',
+            releaseRefreshText: 'Pusť pro aktualizaci zápasů.'
+        }],
 
         store : "Matches",
         sorters: "time",
