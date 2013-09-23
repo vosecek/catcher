@@ -63,24 +63,24 @@ Ext.define('Ext.plugin.PullRefresh', {
          * @cfg {String} lastUpdatedText The text to be shown in front of the last updated time.
          * @accessor
          */
-        lastUpdatedText: 'Last Updated:',
+        lastUpdatedText: 'Poslední aktualizace:',
 
         /**
          * @cfg {String} lastUpdatedDateFormat The format to be used on the last updated date.
          */
-        lastUpdatedDateFormat: 'm/d/Y h:iA',
+        lastUpdatedDateFormat: 'd.m.Y H:i',
 
         /**
          * @cfg {String} loadingText The text that will be shown while the list is refreshing.
          * @accessor
          */
-        loadingText: 'Loading...',
+        loadingText: 'Aktualizuji data z frisbee.cz ...',
 
         /**
          * @cfg {String} loadedText The text that will be when data has been loaded.
          * @accessor
          */
-        loadedText: 'Loaded.',
+        loadedText: 'Data jsou aktuální.',
 
         /**
          * @cfg {Boolean} autoSnapBack Determines whether the pulldown should automatically snap back after data has been loaded.
@@ -240,7 +240,9 @@ Ext.define('Ext.plugin.PullRefresh', {
             filters: store.getRemoteFilter() ? store.getFilters() : []
         });
 
-        proxy.read(operation, this.onLatestFetched, this);
+//         proxy.read(operation, this.onLatestFetched, this);
+// proxy.read() z nějakého důvodu neaktualizuje seznam, takže naše úprava na primitivní .load();
+        store.load();
     },
 
     /**
