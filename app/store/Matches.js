@@ -18,6 +18,15 @@ Ext.define('catcher.store.Matches', {
             return "Hřiště "+record.get("field");
           }
         },        
-        autoLoad : false
+        autoLoad : false,
+        
+        listeners : {
+          load:function(){
+            var session = getSession();
+            var time = new Date();
+            session.set("match_reload",time);
+          }
+        }
+        
     }
 });
