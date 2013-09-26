@@ -10,7 +10,8 @@ Ext.define('catcher.controller.MatchController', {
             editPointDetail : "editPointDetail",
             scoreList : "scoreList",
             matchDetailSettings : "matchDetailSettings",
-            matchDetailScore : "matchDetailScore"
+            matchDetailScore : "matchDetailScore",
+            navigationTitleBar : "matchesNavigation titlebar"
         },
         control : {
             "matchesList" : {
@@ -44,13 +45,36 @@ Ext.define('catcher.controller.MatchController', {
             },
             "editPointDetail button[name=editConfirm]" : {
                 tap : "updatePoint"
+            },
+            // back button support.
+            matchesNavigation : {
+                push : "onPush"
+            },
+            navigationTitleBar : {
+                back : "onBack"
             }
         },
         listeners : {
             initialize : function() {}
         }
     },
-
+    init : function() {
+        /*
+         * pop a view when the back button is pressed note: if it's already at the root it's a noop
+         */
+        var that = this;
+        window.onpopstate = function() {
+            that.getMatchesNavigation().pop();
+        };
+    },
+    onPush: function(view, item) {
+        history.pushState(null, "");
+    },
+    onBack: function() {
+        history.back(); // It will cause the onpopstate event to fire on window.
+        // It prevents back button popping main view directly.
+        return false;
+    },
     confirmMatchDelete : function(el, index, target, record) {
         el.suspendEvents();
         Ext.Msg.confirm("Smazat zápas", "Opravdu chceš smazat zápas? <br />" + record.get("home_name_full") + " vs. "

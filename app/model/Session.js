@@ -22,6 +22,6 @@ Ext.define('catcher.model.Session', {
             type : 'date',
             dateFormat : "timestamp",
             defaultValue : 1
-        }, ]
+        } ]
     }
 });

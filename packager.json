@@ -63,7 +63,7 @@
 	 * @required
 	 * This is where the built application file with be saved. Make sure that output path is not in your input path, you may get into endless recursive copying
 	 */
-	"outputPath":"../build-android-42/",
+	"outputPath":"../build-android-41/",
 
 	/**
 	 * @cfg  configuration
@@ -103,8 +103,11 @@
 	 * This is the location of your certificate.
 	 * This is required when you are developing for Android or you are developing on Windows.
 	 */
-	"certificatePath":"f:/tmp/catcher/cert.json",
-
+	/**
+	 * "certificatePath":"f:/tmp/catcher/cert.json",
+	 */
+	"certificatePath":"/home/hory/devel/catcher/burkond-android-release.keystore",
+	
 	/**
 	 * @cfg  certificateAlias
 	 * This is the name of your certificate.
@@ -136,14 +139,15 @@
 	 * @cfg  sdkPath
 	 * This is the path to the Android SDK, if you are developing an Android application.
 	 */
-	"sdkPath":"F:/tmp/AndroidSDK/sdk",
-
+	/**"sdkPath":"F:/tmp/AndroidSDK/sdk",*/
+	"sdkPath":"/opt/android-sdk",
+	
 	/**
 	 * @cfg  androidAPILevel
 	 * This is android API level, the version of Android SDK to use, you can read more about it here: http://developer.android.com/guide/appendix/api-levels.html.
 	 * Be sure to install corresponding platform API in android SDK manager (android_sdk/tools/android)
 	 */
-	"androidAPILevel":"17",
+	"androidAPILevel":"16",
 
         /**
 	 * @cfg {Array[String]} permissions

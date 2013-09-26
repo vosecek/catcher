@@ -12,18 +12,18 @@
     "114": "resources/icons/Icon@2x.png",
     "144": "resources/icons/Icon~ipad@2x.png"
   },
-  "inputPath": "F:\\tmp\\catcher\\build\\catcher\\package",
-  "outputPath": "F:\\tmp\\catcher\\build\\catcher\\native",
+  "inputPath": "/home/hory/devel/workspaces/catcher-workspace/jcatcher-dev/build/catcher/package",
+  "outputPath": "/home/hory/devel/workspaces/catcher-workspace/jcatcher-dev/build/catcher/native",
   "configuration": "Debug",
   "platform": "Android",
   "deviceType": "Universal",
-  "certificatePath": "f:/tmp/catcher/cert.json",
+  "certificatePath": "/home/hory/devel/catcher/burkond-android-release.keystore",
   "certificateAlias": "",
   "certificatePassword": "",
   "provisionProfile": "",
   "notificationConfiguration": "",
-  "sdkPath": "F:/tmp/AndroidSDK/sdk",
-  "androidAPILevel": "17",
+  "sdkPath": "/opt/android-sdk",
+  "androidAPILevel": "16",
   "permissions": [
     "INTERNET",
     "ACCESS_NETWORK_STATE"
