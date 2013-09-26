@@ -3,7 +3,7 @@ Ext.define('catcher.model.Player', {
     config : {
         idProperty : 'player_id',
         identifier : {
-          type: "sequential"
+            type : "sequential"
         },
         fields : [ {
             name : 'player_id',
@@ -14,8 +14,7 @@ Ext.define('catcher.model.Player', {
         }, {
             name : 'surname',
             type : 'string'
-        }, {
-        }, {
+        }, {}, {
             name : 'nick',
             type : 'string'
         }, {
@@ -23,7 +22,7 @@ Ext.define('catcher.model.Player', {
             type : 'int'
         }, {
             name : 'number',
-            type : 'int'        
+            type : 'int'
         }, {
             name : 'order_score',
             type : 'int'
@@ -33,13 +32,13 @@ Ext.define('catcher.model.Player', {
         }, {
             name : 'type',
             type : 'int',
-            defaultValue: 0
+            defaultValue : 0
         } ]
     },
 
     fullName : function() {
         var d = this.data;
-        names = [d.nick, "- " + d.name, d.surname, "#" + d.number ];
+        names = [ d.nick, "- " + d.name, d.surname, "#" + d.number ];
         return names.join(" ");
     }
 });

@@ -3,13 +3,13 @@ Ext.define('catcher.model.Roster', {
     config : {
         idProperty : 'player_id',
         identifier : {
-          type: "sequential"
-        }        
+            type : "sequential"
+        }
     },
 
     fullName : function() {
         var d = this.data;
-        names = [d.nick, "- " + d.name, d.surname, "#" + d.number ];
+        names = [ d.nick, "- " + d.name, d.surname, "#" + d.number ];
         return names.join(" ");
     }
 });
