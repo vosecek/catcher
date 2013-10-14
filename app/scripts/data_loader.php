@@ -11,7 +11,7 @@ include "../scripts/tournament.php";
 include "../scripts/player.php";
 
 function convert($string){
-	return iconv("cp1250","utf-8",$string);;
+	return iconv("cp1250","utf-8",$string);;  
 }
 
 function convert2($string){
@@ -43,7 +43,7 @@ $cols["teams"] = array("team_id"=>"id","name_short"=>"name_short","name_full"=>"
 $cols["players"] = array("player_id"=>"id","name"=>"name","surname"=>"surname","number"=>"number","team"=>"team","nick"=>"nick","order_assist"=>"order_assist","order_score"=>"order_score");
 $cols["matches"] = array("match_id"=>"id","tournament_id"=>"tournament_id","home_id"=>"home_id","home_name_full"=>"home_name_full","home_name_short"=>"home_name_short","away_name_full"=>"away_name_full","away_name_short"=>"away_name_short","away_id"=>"away_id","score_home"=>"score_home","score_away"=>"score_away","spirit_home"=>"spirit_home","spirit_away"=>"spirit_away","field"=>"field","time"=>"time","time_end"=>"time_end","length"=>"length","in_play"=>"in_play","finished"=>"finished","skupina"=>"skupina");
 $cols["points"] = array("point_id"=>"id","team_id"=>"team_id","player_id"=>"player_id","assist_player_id"=>"assist_player_id","match_id"=>"match_id","time"=>"time","anonymous"=>"anonymous");
-$cols["rosters"] = $cols["players"];
+$cols["searchBox"] = $cols["rosters"] = $cols["players"];
 
 $cols_app = $cols;
 $cols_app["players"]["player_id"] = $cols_app["rosters"]["player_id"] = "player_id";
@@ -246,11 +246,17 @@ if($method == "GET"){ // stažení dat, rùzné prùbìžné aktualizaèní požadavky
         mysql_query("DELETE FROM $tab7 WHERE toDelete = 1 AND $t_cond");
         $vysledek = mysql_query("SELECT $tab2.surname,$tab2.id,$tab2.name,$tab2.number,$tab2.nick,$tab4.subteam_id AS team FROM $tab2 LEFT JOIN $tab4 ON $tab4.player_id=$tab2.id WHERE $tab4.$t_cond $skryte");                
       break;
+      case "searchBox":
+        $string = iconv("utf-8","cp1250",$_GET["search"]);
+        if(strlen($string) > 2){
+          $vysledek = mysql_query("SELECT $tab2.* FROM $tab2 WHERE (name LIKE '%$string%' OR surname LIKE '%$string%' OR nick LIKE '%$string%') AND NOT EXISTS (SELECT * FROM $tab4 WHERE $tab4.player_id=$tab2.id AND $tab4.tournament_id = $_GET[tournament_id])");                  
+        }
+      break;
       case "rosters":
         $team = mysql_fetch_array(mysql_query("SELECT master FROM $tab8 WHERE id = '$_GET[team]'"));
         $result = mysql_query("SELECT $tab2.team AS master,$tab7.player_id AS id FROM $tab2 LEFT JOIN $tab7 ON $tab2.id = $tab7.player_id WHERE $tab7.team_id = '$_GET[team]'");
         $master_teams = array();
-        $players_ids = array();
+        $players_ids = array(0);
         while($data = mysql_fetch_array($result)){
           $players_ids[] = $data["id"];
           if(!in_array($data["master"], $master_teams)) $master_teams[] = $data["master"];
@@ -258,7 +264,7 @@ if($method == "GET"){ // stažení dat, rùzné prùbìžné aktualizaèní požadavky
         unset($master_teams[array_search($team["master"],$master_teams)]);
         $players_ids = implode(",",$players_ids);
         $vysledek = mysql_query("SELECT $tab2.team,$tab2.surname,$tab2.id,$tab2.name,$tab2.number,$tab2.nick FROM $tab2 WHERE team = $team[master] $skryte");
-        $vysledek2 = mysql_query("SELECT $tab2.team,$tab2.surname,$tab2.id,$tab2.name,$tab2.number,$tab2.nick FROM $tab2 WHERE $tab2.id IN ($players_ids) $skryte");        
+        $vysledek2 = mysql_query("SELECT $tab2.team,$tab2.surname,$tab2.id,$tab2.name,$tab2.number,$tab2.nick FROM $tab2 WHERE $tab2.id IN ($players_ids) $skryte");                
       break;
       case "tournaments":
         $vysledek = mysql_query("SELECT * FROM mod_catcher_tournaments WHERE active=1 ORDER BY name");

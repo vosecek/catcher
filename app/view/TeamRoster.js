@@ -14,7 +14,7 @@ Ext.define("catcher.view.TeamRoster", {
           {
             docked: 'top',
             xtype: 'toolbar',
-            title: 'Soupiska',
+            title: '',
             defaults: {
               iconMask: true
             },
@@ -33,6 +33,17 @@ Ext.define("catcher.view.TeamRoster", {
               },
               {
                 xtype: "button",
+                align: "right",
+                iconCls: "add",
+                handler:function(){ 
+                  var modalPanel = this.up("modalPanel");
+                  modalPanel.removeAll();                  
+                  var searchBox = Ext.getCmp("searchBox") || new catcher.view.SearchBox();
+                  modalPanel.add(searchBox);                  
+                }
+              },
+              {
+                xtype: "button",
                 align:"right",
                 iconCls: "check2",
                 ui: "confirm",
@@ -44,9 +55,10 @@ Ext.define("catcher.view.TeamRoster", {
                   var modalPanel = list.up("modalPanel");
                   
                   var length = roster.length;
+                  
                   for (var i = 0; i < length; i++) {
                     roster[i].setDirty();
-                  }
+                  }                  
                                     
                   list.setMasked({
                     xtype : 'loadmask',
@@ -61,7 +73,13 @@ Ext.define("catcher.view.TeamRoster", {
                     success: function(response){
                       store.getProxy().setExtraParam("team",active_team);                                            
                       store.syncWithListener(function(){
-                        Ext.getStore("Players").load(function(){
+                        var players = Ext.getStore("Players");
+                        players.load(function(response){
+                          if(response.length == 0){
+                            players.filter("team",active_team);
+                            players.removeAll();
+                            players.clearFilter();
+                          }
                           list.setMasked(false);
                           modalPanel.hide();
                           Ext.Viewport.setMasked({
