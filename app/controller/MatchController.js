@@ -632,7 +632,6 @@ function saveMatchSettings(match, values) {
     matches.getProxy().setExtraParam("match_id", values.match_id);
 
     matches.syncWithListener(function() {
-        // Ext.Msg.alert("OK","Informace o zápasu aktualizovány.");
         Ext.Viewport.setMasked(false);
     });
 }

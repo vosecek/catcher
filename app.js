@@ -24,9 +24,9 @@ Ext.application({
     requires : [ 'Ext.MessageBox' ],
 
     views : [ "Main", "Login", "About", "Tournament", "MatchesNavigation", "TeamList", "MatchDetailCounter", "MatchDetailSettings",
-            "MatchDetailScore", "EditorPanel", "HelpPanel", "TeamRoster", "ModalPanel", "MainNavigation" ],
+            "MatchDetailScore", "EditorPanel", "HelpPanel", "TeamRoster", "ModalPanel", "MainNavigation", "SearchBox" ],
     stores : [ "Tournaments", "Matches", "Session", "Teams", "Players", "Evidence", "Points", "Rosters", "MatchPlayerListScore",
-            "MatchPlayerListAssist" ],
+            "MatchPlayerListAssist", "SearchBox" ],
     models : [ "Tournament", "Match", "Session", "Team", "Player", "Evidence", "Point", "Roster" ],
     controllers : [ "Login", "Evidence", "MatchController" ],
 
