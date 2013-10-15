@@ -38,8 +38,9 @@ Ext.define("catcher.view.TeamRoster", {
                 handler:function(){ 
                   var modalPanel = this.up("modalPanel");
                   modalPanel.removeAll();                  
-                  var searchBox = Ext.getCmp("searchBox") || new catcher.view.SearchBox();
-                  modalPanel.add(searchBox);                  
+                  var searchBox = Ext.getCmp("searchBox") || new catcher.view.SearchBox();                  
+                  modalPanel.add(searchBox);
+                  searchBox.show();                  
                 }
               },
               {
