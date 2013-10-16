@@ -1,9 +1,9 @@
 Ext.define('catcher.model.Point', {
-    extend : 'Ext.data.Model',
+    extend : 'Ext.data.Model',    
     config : {
         idProperty : 'point_id',
         identifier : {
-            type : "uuid"
+          type: "uuid"
         },
         fields : [ {
             name : 'point_id',
@@ -21,11 +21,14 @@ Ext.define('catcher.model.Point', {
             name : 'match_id',
             type : 'int'
         }, {
+        }, {
             name : 'score_home',
             type : 'int'
         }, {
+        }, {
             name : 'score_away',
             type : 'int'
+        }, {
         }, {
             name : 'anonymous',
             type : 'boolean'

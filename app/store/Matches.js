@@ -7,26 +7,26 @@ Ext.define('catcher.store.Matches', {
         proxy : {
             type : 'rest',
             url : 'http://www.frisbee.cz/catcher/app/scripts/data_loader.php?store=matches&',
-            appendId : false
+            appendId: false
         },
         sorters : {
             property : "time",
             direction : "ASC"
         },
-        grouper : {
-            groupFn : function(record) {
-                return "Hřiště " + record.get("field");
-            }
-        },
+        grouper: {
+          groupFn:function(record){
+            return "Hřiště "+record.get("field");
+          }
+        },        
         autoLoad : false,
-
+        
         listeners : {
-            load : function() {
-                var session = getSession();
-                var time = new Date();
-                session.set("match_reload", time);
-            }
+          load:function(){
+            var session = getSession();
+            var time = new Date();
+            session.set("match_reload",time);
+          }
         }
-
+        
     }
 });

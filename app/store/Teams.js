@@ -7,7 +7,7 @@ Ext.define('catcher.store.Teams', {
         proxy : {
             type : 'jsonp',
             url : 'http://www.frisbee.cz/catcher/app/scripts/data_loader.php?store=teams',
-            appendId : false
+            appendId: false
         },
         sorters : "name_short",
         grouper : function(record) {

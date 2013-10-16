@@ -38,7 +38,7 @@ Ext.define('catcher.controller.Evidence', {
         data.set("surname", values.surname);
         data.set("number", values.number);
         data.set("nick", values.nick);
-
+        
         store.sync();
 
         Ext.Viewport.setMasked({
@@ -51,28 +51,27 @@ Ext.define('catcher.controller.Evidence', {
     showPlayer : function(list, record) {
 
         // naplnit hráčovu kartičku
-        if (typeof record.raw == "undefined")
-            record.raw = record.data.data;
-        this.getKarticka().setValues(record.raw);
+        if(typeof record.raw == "undefined") record.raw = record.data.data;
+        this.getKarticka().setValues(record.raw);        
         var numbers = new Array;
-        for (i = 0; i < 100; i++) {
-            numbers.push({
-                text : i,
-                value : i
-            });
-        }
+        for(i = 0;i<100;i++){
+          numbers.push({
+            text:i,
+            value:i
+          });
+        } 
         this.getKarticka().query("selectfield[name=number]")[0].setOptions(numbers).setValue(record.raw.number);
     },
-
-    composeTeams : function() {
-        var teams = new Array();
-        Ext.getStore("Teams").each(function(radek) {
-            teams.push({
-                text : radek.get("name_full"),
-                value : radek.get("team_id")
-            });
-        });
-        return teams;
+    
+    composeTeams: function(){
+      var teams = new Array();
+      Ext.getStore("Teams").each(function(radek) {
+        teams.push({
+            text : radek.get("name_full"),
+            value : radek.get("team_id")
+        });        
+      });
+      return teams;
     },
 
     sestavEvidenci : function(team_id) {
@@ -91,19 +90,18 @@ Ext.define('catcher.controller.Evidence', {
                 items : new Array
             };
             data.push(team);
-            players.filterBy(function(record, id) {
-                if (record.get("team") == radek.get("team_id"))
-                    return true;
+            players.filterBy(function(record,id){            
+              if(record.get("team") == radek.get("team_id")) return true;
             });
             players.sort({
-                property : "nick"
+              property : "nick"
             });
             players.each(function(detail) {
                 var index = data.length - 1;
                 var jmeno = [ detail.get("name"), detail.get("surname") ];
                 data[index].items.push({
-                    text : "<strong>" + detail.get("nick") + " #" + detail.get("number") + "</strong> <small>(" + jmeno.join(" ") + ")</small>",
-                    player_id : detail.get("player_id") * 1,
+                    text : "<strong>"+detail.get("nick")+ " #" + detail.get("number")+"</strong> <small>("+jmeno.join(" ")+")</small>",
+                    player_id : detail.get("player_id")*1,
                     name : detail.get("name"),
                     surname : detail.get("surname"),
                     team : detail.get("team"),
@@ -124,9 +122,9 @@ Ext.define('catcher.controller.Evidence', {
         Ext.Viewport.setMasked(false);
 
         if (team_id > 0) {
-            var parent = evidence.findRecord("team_id", team_id, false, false, false, true);
-            nl.goToNode(parent);
-            Ext.getCmp("connectPlayer").show();
+          var parent = evidence.findRecord("team_id", team_id, false, false, false, true);
+          nl.goToNode(parent);
+          Ext.getCmp("connectPlayer").show();
         }
     }
 });
