@@ -24,7 +24,7 @@ Ext.define("catcher.view.MatchesList", {
             painted : function() {
                 var session = getSession();
                 var time = new Date();                                
-                if(session.get("match_reload").getTime()+600000 < time.getTime()){
+                if(session.get("match_reload").getTime()+(300*1000) < time.getTime()){
                   var store = this.getStore();
                   if(session.get("match_reload").getTime() == 1000) {
                     catcher.app.getController("MatchController").checkUnfinishedMatches(store);
