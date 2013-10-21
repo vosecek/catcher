@@ -19,7 +19,7 @@ Ext.define("catcher.view.SearchBox",{
             label:"Hledej: ",            
             name:"name",
             id:"searchText",
-            value:""
+            value:""            
           },{
             xtype: 'spacer'
           },{

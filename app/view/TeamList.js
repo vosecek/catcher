@@ -130,7 +130,7 @@ Ext.define('catcher.view.TeamList', {
         var connectPlayer = Ext.getCmp("connectPlayer");   
 				if(node.isLeaf()){
 					Ext.getCmp("teamList").setBackText("Týmy");
-					addPlayer.show(); // zobrazit, jsme na výpisu týmu, předchozí node byl leaf
+// 					addPlayer.show(); // zobrazit, jsme na výpisu týmu, předchozí node byl leaf
           connectPlayer.show();
 				}else{					
 // 					addPlayer.hide(); // skrýt add button, předchozí node byla soupiska týmu a jsme na přehledu týmů
