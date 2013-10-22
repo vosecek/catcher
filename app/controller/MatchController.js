@@ -54,19 +54,25 @@ Ext.define('catcher.controller.MatchController', {
     
     confirmMatchDelete: function (el,index,target,record){
       el.suspendEvents();
-      Ext.Msg.confirm("Smazat zápas","Opravdu chceš smazat zápas? <br />"+record.get("home_name_full")+" vs. "+record.get("away_name_full"),function(response){        
-        if(response == "yes"){
-          var store = el.getStore();
-          store.remove(record);
-          Ext.Viewport.setMasked({xtype:"loadmask",message:"Mažu zápas na serveru"});
-          store.syncWithListener(function(response){            
-            Ext.Msg.alert("OK","Zápas odstraněn");
-            Ext.Viewport.setMasked(false);
-          });                              
-        }
-        el.resumeEvents(true);
-        el.deselectAll();
-      })
+      
+      Ext.device.Notification.show({
+          title: 'Smazat zápas',
+          message: "Opravdu chceš smazat zápas? <br />"+record.get("home_name_full")+" vs. "+record.get("away_name_full"),
+          buttons: [{text:"Zrušit", ui: "decline"},{text:"Smazat zápas", ui: "confirm"}],
+          callback: function(button) {
+              if (button == "Smazat zápas") {
+                  var store = el.getStore();
+                  store.remove(record);
+                  Ext.Viewport.setMasked({xtype:"loadmask",message:"Mažu zápas na serveru"});
+                  store.syncWithListener(function(response){            
+                    Ext.Msg.alert("OK","Zápas odstraněn");
+                    Ext.Viewport.setMasked(false);
+                  });
+              }
+              el.resumeEvents(true);
+              el.deselectAll();
+          }
+      });      
     },
     
     showMatchDetail : function(list,index,target,record,toFinish) {
@@ -204,9 +210,9 @@ Ext.define('catcher.controller.MatchController', {
         Ext.device.Notification.show({
             title: 'Zadat bod?',
             message: message,
-            buttons: Ext.MessageBox.OKCANCEL,
+            buttons: [{text:"Zrušit", ui: "decline"},{text:"Uložit", ui: "confirm"}],
             callback: function(button) {
-                if (button == "ok") {
+                if (button == "Uložit") {
                     catcher.app.getController("MatchController").addPointInternal(assist_player_id,2);
                 } else {
                     list.deselectAll();
@@ -259,9 +265,7 @@ Ext.define('catcher.controller.MatchController', {
           item.setDirty();
           return true;
         }
-      });
-      
-//       console.log(players);
+      });      
       
       players.syncWithListener(function(){
         players.clearFilter();        
@@ -369,7 +373,7 @@ Ext.define('catcher.controller.MatchController', {
       var away = this.getMatchDetail().query("label[name=score_away]")[0];
             
       function updateCounter(counter){
-        if(counter.getHtml() != match.get(counter.config.name) && counter.getHtml()!=""){
+        if((counter.getHtml() != match.get(counter.config.name)) && counter.getHtml()!==""){          
           counter.setStyle("color:red");                
           setTimeout(function(){
             counter.setHtml(match.get(counter.config.name));
@@ -481,66 +485,76 @@ Ext.define('catcher.controller.MatchController', {
         if(values.score_away > match.get("score_away")) diffs.push("Existující skóre "+match.get("away_name_short")+": "+match.get("score_away")+", vkládané: "+values.score_away); 
       }
       
-      Ext.Msg.confirm("Zadávaný výsledek","<span style='color:red'>"+match.get("home_name_short")+"</span> vs. <span style='color:yellow'>"+match.get("away_name_short")+"</span><br /> <span style='color:red'>"+values.score_home+"</span>:"+"<span style='color:yellow'>"+values.score_away+"</span>",function(response){
-        if(response == "yes"){                       
-          if(diffs_fatal.length > 0){
-            Ext.Msg.alert("Nižší skóre",diffs_fatal.join("<br />"));            
-          }else{
-            Ext.Viewport.setMasked({
-                xtype : 'loadmask',
-                message : 'Ukládám informace o zápase'
-            });
-            if(diffs.length > 0){
-              Ext.Msg.confirm("Vyšší skóre","<span style='color:red'>Zadané skóre je vyšší než naskórované, vytvořím anonymní body, opravdu?</span><br />"+diffs.join("<br />"),function(response){              
-                if(response == "yes") {              
-                  var points = Ext.getStore("Points");              
-                  function equalizer(difference,team_id,match_id){
-                    var i = 0;
-                    while(difference > i){
-                      var equalizer = Ext.create("catcher.model.Point", {
-                          team_id : team_id,
-                          player_id : 0,
-                          match_id : match.get("match_id"),
-                          assist_player_id : 0,
-                          time : Math.round(+new Date()/1000)+i,
-                          anonymous: true
-                      });
-                      points.add(equalizer);                
-                      i++;
-                    }                
-                  }
-                  
-                  Ext.Ajax.request({
-                    url:"http://www.frisbee.cz/catcher/app/scripts/data_process.php?operation=set_score",
-                    params:{
-                      score_home:values.score_home,
-                      score_away:values.score_away,
-                      spirit_home:values.spirit_home,
-                      spirit_away:values.spirit_away,
-                      home_id:match.get("home_id"),
-                      away_id:match.get("away_id"),
-                      match_id:match.get("match_id")
-                    },
-                    success: function(response){                  
-                      var store = Ext.getStore("Points");
-                      store.load(function(response){                        
-                        catcher.app.getController("MatchController").updateMatchInfo(match.get("match_id"),-1);
-                        saveMatchSettings(match,values);                      
-                      });
-                    }
-                  });                                
+      Ext.device.Notification.show({
+          title: 'Zadávaný výsledek',
+          message: "<span style='color:red'>"+match.get("home_name_short")+"</span> vs. <span style='color:lime'>"+match.get("away_name_short")+"</span><br /> <span style='color:red'>"+values.score_home+"</span>:"+"<span style='color:lime'>"+values.score_away+"</span>",
+          buttons: [{text:"Zrušit", ui: "decline"},{text:"Uložit", ui: "confirm"}],
+          callback: function(response) {
+              if(response == "Uložit"){                       
+                if(diffs_fatal.length > 0){
+                  Ext.Msg.alert("Nižší skóre",diffs_fatal.join("<br />"));            
                 }else{
-                  Ext.Viewport.setMasked(false);
-                }                                  
-              });
-            }else{
-              saveMatchSettings(match,values);
-            }
+                  Ext.Viewport.setMasked({
+                      xtype : 'loadmask',
+                      message : 'Ukládám informace o zápase'
+                  });
+                  if(diffs.length > 0){
+                    Ext.device.Notification.show({
+                      title:"Vyšší skóre",
+                      message:"<span style='color:red'>Zadané skóre je vyšší než naskórované, vytvořím anonymní body, opravdu?</span><br />"+diffs.join("<br />"),
+                      buttons: [{text:"Zrušit", ui: "decline"},{text:"Vytvořit body", ui: "confirm"}],
+                      callback:function(response){              
+                        if(response == "Vytvořit body") {              
+                          var points = Ext.getStore("Points");              
+                          function equalizer(difference,team_id,match_id){
+                            var i = 0;
+                            while(difference > i){
+                              var equalizer = Ext.create("catcher.model.Point", {
+                                  team_id : team_id,
+                                  player_id : 0,
+                                  match_id : match.get("match_id"),
+                                  assist_player_id : 0,
+                                  time : Math.round(+new Date()/1000)+i,
+                                  anonymous: true
+                              });
+                              points.add(equalizer);                
+                              i++;
+                            }                
+                          }
+                          
+                          Ext.Ajax.request({
+                            url:"http://www.frisbee.cz/catcher/app/scripts/data_process.php?operation=set_score",
+                            params:{
+                              score_home:values.score_home,
+                              score_away:values.score_away,
+                              spirit_home:values.spirit_home,
+                              spirit_away:values.spirit_away,
+                              home_id:match.get("home_id"),
+                              away_id:match.get("away_id"),
+                              match_id:match.get("match_id")
+                            },
+                            success: function(response){                  
+                              var store = Ext.getStore("Points");
+                              store.load(function(response){                        
+                                catcher.app.getController("MatchController").updateMatchInfo(match.get("match_id"),-1);
+                                saveMatchSettings(match,values);                      
+                              });
+                            }
+                          });                                
+                        }else{
+                          Ext.Viewport.setMasked(false);
+                        }
+                      }                                  
+                    });
+                  }else{
+                    saveMatchSettings(match,values);
+                  }
+                }
+              }else{
+                Ext.Viewport.setMasked(false);
+              }
           }
-        }else{
-          Ext.Viewport.setMasked(false);
-        }
-      });
+      });      
     },        
     
     updateMatchSettings : function(){
@@ -564,11 +578,16 @@ Ext.define('catcher.controller.MatchController', {
           var length = record.get("length")*60*1000;
           var cap = 1200000;
           if(record.get("time").getTime()+length+cap < new Date().getTime()){
-            Ext.Msg.confirm("Neukončený zápas","Zápas "+record.get("home_name_short")+" vs. "+record.get("away_name_short")+" není ukončený a zřejmě již skončil. Klikem na Yes přejdeš do detailu zápasu a po zkontrolování výsledného skóre jej ukončíš.",function(response){
-              if(response == "yes"){
-                catcher.app.getController("MatchController").showMatchDetail(false,false,false,record,true);
-              }
-            });
+            Ext.device.Notification.show({
+                title: 'Neukončený zápas',
+                message: "Zápas <span style='color:white'>"+record.get("home_name_short")+" vs. "+record.get("away_name_short")+"</span> není ukončený a zřejmě již skončil.<br />Přejít do detailu zápasu a po zkontrolování výsledného skóre ukončit?.",
+                buttons: [{text:"Zrušit", ui: "decline"},{text:"Ukončit zápas", ui: "confirm"}],
+                callback: function(button) {
+                    if (button == "Ukončit zápas") {
+                        catcher.app.getController("MatchController").showMatchDetail(false,false,false,record,true);
+                    }
+                }
+            });            
           }
         }
       });
