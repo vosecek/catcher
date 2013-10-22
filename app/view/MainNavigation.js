@@ -52,7 +52,7 @@ Ext.define("catcher.view.MainNavigation",{
               formPanel.query("selectfield[name=skupina]")[0].setOptions(skupiny2push);
               formPanel.query("selectfield[name=home_id]")[0].setOptions(teams);
               formPanel.query("selectfield[name=away_id]")[0].setOptions(teams);
-              formPanel.query("selectfield[name=length]")[0].setOptions(times);
+              formPanel.query("selectfield[name=length]")[0].setOptions(times).setValue(tournament.get("default_length"));
               formPanel.setValues({
                 time:new Date()                
               });
