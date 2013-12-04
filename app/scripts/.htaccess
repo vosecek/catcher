@@ -1,3 +1,0 @@
-RewriteEngine on
-php_value error_reporting 8191
-php_flag display_errors on
