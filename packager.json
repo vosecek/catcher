@@ -121,7 +121,7 @@
 	 * @cfg  certificatePassword
 	 * The password which was specified during certificate export
 	 */
-	"certificatePassword":"18Ihc8704",
+	"certificatePassword":"HESLO",
 	/**
 	 * @cfg  provisionProfile
 	 * The path to the provision profile (APP_NAME.mobileprovision) which you can create and then download from Apple's provisioning portal
