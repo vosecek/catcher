@@ -19,10 +19,10 @@ Ext.define('catcher.controller.MatchController', {
 //                 itemtaphold: "confirmMatchDelete"                
             },
             "matchesNavigation matchPlayerList[name=score]" : {
-                select: "showAssistPlayer"
+                select: "addPoint"
             },
             "matchesNavigation matchPlayerList[name=assist]" : {
-                select : "addPoint"
+                select : "showScorePlayer"
             },
             "matchDetail button[name=matchScore]" : {
                 tap : "showScore"
@@ -133,9 +133,11 @@ Ext.define('catcher.controller.MatchController', {
           team:session.score_team_id,
           number:0,
           type:1
-        });
+        });                                                                    
+        
         MatchPlayerListScore.add(anonym);
         MatchPlayerListAssist.add(anonym);
+        MatchPlayerListAssist.add(getCallahan());
         
         MatchPlayerListScore.sort([
           {
@@ -169,36 +171,29 @@ Ext.define('catcher.controller.MatchController', {
             var pressedCls = "x-button-pressed";         
             c.removeCls(pressedCls);
           });
-        }else{        
+        }else{
           this.getMatchesNavigation().push({
-              xtype : "matchPlayerList",
-              title : "Skóroval " + team.name_short,
-              name : "score",
-              store : MatchPlayerListScore,
-              id: "MatchPlayerListScore"
-          });
-        }
-    },
-
-    showAssistPlayer : function(list, record) {
-        list.setDisableSelection(true);
-        var session = getSession();
-
-        session.score_player_id = record.data.player_id;        
-        
-        var MatchPlayerListAssist = Ext.getStore("MatchPlayerListAssist");                                                            
-        
-        // přidání CallahanGoal do nabídky pro asistenci
-        var callahan = getCallahan();
-                
-        MatchPlayerListAssist.add(callahan);                
-        
-        this.getMatchesNavigation().push({
             xtype : "matchPlayerList",
             title : "Nahrával " + session.score_team_name_short,
             name : "assist",
             store : MatchPlayerListAssist,
             id: "MatchPlayerListAssist"
+          });                          
+        }
+    },
+
+    showScorePlayer : function(list, record) {
+        list.setDisableSelection(true);
+        var session = getSession();
+
+        session.assist_player_id = record.data.player_id;                                       
+        
+        this.getMatchesNavigation().push({
+            xtype : "matchPlayerList",
+            title : "Skóroval " + session.score_team_name_short,
+            name : "score",
+            store : Ext.getStore("MatchPlayerListScore"),
+            id: "MatchPlayerListScore"
         });
         list.setDisableSelection(false);
         list.deselectAll();
@@ -207,37 +202,39 @@ Ext.define('catcher.controller.MatchController', {
     addPoint : function(list, record) {
         list.setDisableSelection(true);
         var session = getSession();
-        var assist_player_id = record.data.player_id;
+        var score_player_id = record.data.player_id;
 
-        var MatchPlayerListScore = Ext.getStore("MatchPlayerListScore").findRecord("player_id", session.score_player_id, false, false, false, true).data;
-        var MatchPlayerListAssist = Ext.getStore("MatchPlayerListAssist").findRecord("player_id", assist_player_id, false, false, false, true).data;
-        var message = "Bod: " + fullName(MatchPlayerListScore) + "<br />Asistence: " + fullName(MatchPlayerListAssist);
-                
-        Ext.Msg.confirm('Zadat bod?',message,function(button){
-          if (button == "yes") {
-              catcher.app.getController("MatchController").addPointInternal(assist_player_id,2);                    
-          } else {
-              list.deselectAll();
-          }
-        });
+//         var MatchPlayerListScore = Ext.getStore("MatchPlayerListScore").findRecord("player_id", session.score_player_id, false, false, false, true).data;
+//         var MatchPlayerListAssist = Ext.getStore("MatchPlayerListAssist").findRecord("player_id", assist_player_id, false, false, false, true).data;
+//         var message = "Bod: " + fullName(MatchPlayerListScore) + "<br />Asistence: " + fullName(MatchPlayerListAssist);                
+//                 
+//         Ext.Msg.confirm('Zadat bod?',message,function(button){
+//           if (button == "yes") {
+//               catcher.app.getController("MatchController").addPointInternal(score_player_id,2);                    
+//           } else {
+//               list.deselectAll();
+//           }
+//         });
+        
+        catcher.app.getController("MatchController").addPointInternal(score_player_id,2);
         
         list.setDisableSelection(false);
     },
 
-    addPointInternal : function(assist_player_id,pop_level) {
+    addPointInternal : function(score_player_id,pop_level) {
         var session = getSession();
         var points = Ext.getStore("Points");
         var matches = Ext.getStore("Matches");
         
         // pop_level == 0 -> rychlé přidání bodu, žádný hráč na soupisce
-        if(pop_level == 0) session.score_player_id = 0;
+        if(pop_level == 0) session.assist_player_id = 0;
 
         var point = Ext.create("catcher.model.Point", {
             point_id: false,
             team_id : session.score_team_id,
-            player_id : session.score_player_id,
+            player_id : score_player_id,
             match_id : session.match_id,
-            assist_player_id : assist_player_id,
+            assist_player_id : session.assist_player_id,
             time : Math.round(+new Date()/1000),
             anonymous : false
         });
