@@ -28,7 +28,7 @@ Ext.define("catcher.view.MatchPlayerList", {
               var list = this;
               // skórující hráč si nemůže nahrát sám sobě              
               if(this.getId() == "MatchPlayerListScore"){
-                if(session.assist_player_id>0){          
+                if(session.assist_player_id>0 && session.assist_player_id<2147483647){          
                   var asistujici = Ext.getStore("MatchPlayerListScore").find("player_id",session.assist_player_id,false,false,false,true);                            
                   list.getItemAt(asistujici).hide();          
                 }
