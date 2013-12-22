@@ -90,8 +90,18 @@ Ext.define("catcher.view.MainNavigation",{
               
               this.up("actionSheet").hide();
             }
-        },                        
-        {
+        },{
+            text: 'Smazat zápas',
+            ui: "decline",
+            iconCls:"trash",
+            matchDetail: true,
+            handler:function(){
+              var session = getSession();                            
+              var match = Ext.getStore("Matches").findRecord("match_id",session.match_id,false,false,false,true);
+              catcher.app.getController("MatchController").confirmMatchDelete(match);                                          
+              this.up("actionSheet").hide();
+            }
+        },{                        
             text: 'Zobrazit neodehraná utkání',
             iconCls:"time",
             matchesList: true,

@@ -16,8 +16,7 @@ Ext.define("catcher.view.QuickMatchMenu",{
             title: 'Rychlé menu',
             ui: 'dark',
             margin: "0em 0em 1em 0em"
-        },
-        {
+        },{
             text: 'Smazat zápas',
             ui: "decline",
             iconCls:"trash",
@@ -25,11 +24,11 @@ Ext.define("catcher.view.QuickMatchMenu",{
             handler:function(){
               var session = getSession();                            
               var match = Ext.getStore("Matches").findRecord("match_id",session.match_id,false,false,false,true);
-              catcher.app.getController("MatchController").confirmMatchDelete(match);                                          
+              var controller = catcher.app.getController("MatchController");
+              controller.confirmMatchDelete(match);                                                        
               this.up("quickMatchMenu").hide();
             }
-        },                      
-        {
+        },{
             text: 'Parametry zápasu',
             iconCls:"settings",
             matchDetail: true,
