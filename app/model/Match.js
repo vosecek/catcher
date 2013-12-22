@@ -25,6 +25,7 @@ Ext.define('catcher.model.Match', {
         {name: 'length', type: 'int'},
         {name: 'in_play', type: 'boolean'},
         {name: 'skupina', type: 'string'},
+        {name: 'skupina_human', type: 'string'},
         {name: 'finished', type: 'boolean'}
 	  ]
 	}

@@ -41,7 +41,7 @@ if(isset($_REQUEST['callback'])) $callback = $_REQUEST['callback'];
 $cols["tournaments"] = array("tournament_id"=>"id","tournament_name"=>"name","fields"=>"fields","time"=>"time","default_length"=>"default_length","skupiny"=>"skupiny");
 $cols["teams"] = array("team_id"=>"id","name_short"=>"name_short","name_full"=>"name_full","master_id"=>"master");
 $cols["players"] = array("player_id"=>"id","name"=>"name","surname"=>"surname","number"=>"number","team"=>"team","nick"=>"nick","order_assist"=>"order_assist","order_score"=>"order_score");
-$cols["matches"] = array("match_id"=>"id","tournament_id"=>"tournament_id","home_id"=>"home_id","home_name_full"=>"home_name_full","home_name_short"=>"home_name_short","away_name_full"=>"away_name_full","away_name_short"=>"away_name_short","away_id"=>"away_id","score_home"=>"score_home","score_away"=>"score_away","spirit_home"=>"spirit_home","spirit_away"=>"spirit_away","field"=>"field","time"=>"time","time_end"=>"time_end","length"=>"length","in_play"=>"in_play","finished"=>"finished","skupina"=>"skupina");
+$cols["matches"] = array("match_id"=>"id","tournament_id"=>"tournament_id","home_id"=>"home_id","home_name_full"=>"home_name_full","home_name_short"=>"home_name_short","away_name_full"=>"away_name_full","away_name_short"=>"away_name_short","away_id"=>"away_id","score_home"=>"score_home","score_away"=>"score_away","spirit_home"=>"spirit_home","spirit_away"=>"spirit_away","field"=>"field","time"=>"time","time_end"=>"time_end","length"=>"length","in_play"=>"in_play","finished"=>"finished","skupina"=>"skupina","skupina_human"=>"skupina_human");
 $cols["points"] = array("point_id"=>"id","team_id"=>"team_id","player_id"=>"player_id","assist_player_id"=>"assist_player_id","match_id"=>"match_id","time"=>"time","anonymous"=>"anonymous");
 $cols["searchBox"] = $cols["rosters"] = $cols["players"];
 
@@ -102,7 +102,7 @@ if($method == "POST"){ // insert dat ve storu
   $data = file_get_contents("php://input");
 	$data = json_decode($data,true);
   foreach($cols_app[$store] as $index=>$value){
-  	$data[$value] = convert2($data[$value]);
+    if(isset($data[$value])) $data[$value] = convert2($data[$value]);
 	}
     
 
@@ -144,7 +144,7 @@ if($method == "PUT"){ // update dat ve storu
 	$data = file_get_contents("php://input");
 	$data = json_decode($data,true);
 	foreach($cols_app[$store] as $index=>$value){
-  	$data[$value] = convert2($data[$value]);
+  	if(isset($data[$value])) $data[$value] = convert2($data[$value]);
 	}
 	switch($store){
     case "rosters":
@@ -282,7 +282,13 @@ if($method == "GET"){ // stažení dat, rùzné prùbìžné aktualizaèní požadavky
   				$data["away_name_short"] = $away["name_short"];
   				$data["away_name_full"] = $away["name_full"];
           if($data["in_play"] == 0) $data["in_play"] = 0;
-  			}
+            preg_match("~(.*)#(.*)~",$data["skupina"],$data["skupina_human"]);       
+            if(!empty($data["skupina_human"])) {
+              $data["skupina_human"] = $data["skupina_human"][2];                
+            }else{
+              $data["skupina_human"] = "Skupina ".$data["skupina"];
+            }
+    			}
         
         if($store == "players"){
           $result = NotORM::make()->mod_catcher_player2tournament()->select("id, order_score, order_assist")->where("tournament_id",$tournament->id)->where("player_id",$data["id"])->fetch();          

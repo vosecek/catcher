@@ -18,7 +18,7 @@ Ext.define("catcher.view.MatchesList", {
         sorters: "time",
         grouped: true,        
         loadingText: "Aktualizuji data z www.frisbee.cz",
-        itemTpl : "<div style=\"{[values.finished==1?\"font-style:italic; font-size:smaller;\":\"\"]}\">{home_name_full} vs. {away_name_full} ({score_home}:{score_away}) <br /> <small>{time:date('G:i, j.n')}</small></div>",
+        itemTpl : "<div style=\"{[values.finished==1?\"font-style:italic; font-size:smaller;\":\"\"]}\">{home_name_full} vs. {away_name_full} ({score_home}:{score_away}) <br /> <small>{time:date('G:i, j.n - l')}, {skupina_human}</small></div>",
         onItemDisclosure : false,
         listeners : {
             painted : function() {
