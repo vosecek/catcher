@@ -58,6 +58,10 @@ Ext.application({
           }
           return syncResult;
         };
+
+        Ext.Date.dayNames = ["Neděle", "Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota"];
+        Ext.Date.monthNames = ["Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"];
+        Ext.DateExtras.monthNames = ["Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"];
         
         // hezÄŤĂ­ confirm message box (zelenĂ© a ÄŤervenĂ© tlaÄŤĂ­tko)
         var MB = Ext.MessageBox;

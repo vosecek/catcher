@@ -10,7 +10,7 @@ Ext.define('Ext.ux.picker.DateTime', {
          * The start year for the date picker.
          * @accessor
          */
-        yearFrom: 1980,
+        yearFrom: new Date().getFullYear(),
 
         /**
          * @cfg {Number} yearTo
@@ -70,7 +70,7 @@ Ext.define('Ext.ux.picker.DateTime', {
          * @cfg {Int} minuteInterval
          * @accessor
          */
-        minuteInterval : 15,
+        minuteInterval : 5,
 
         /**
          * @cfg {Boolean} ampm
