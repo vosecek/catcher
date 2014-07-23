@@ -1,0 +1,34 @@
+<?php
+class tournament{
+  public $id;
+  public $db;
+  function __construct($id = false){
+    $this->id = $id;
+    $this->db = NotORM::make();
+  }    
+  
+  // funkce pro pøepoèítání celkového skóre hráèù, kteøí dali bod
+  function teamStats($data){
+    $query = $this->db->mod_catcher_player2subteam()->where("team_id",$data["team_id"]);
+    $this->db->mod_catcher_player2tournament()->where("subteam_id",$data["team_id"])->update(array("order_score"=>0,"order_assist"=>0));
+    foreach($query as $radek){  
+      $player = new player($radek["player_id"],$this->id);
+      $player->computeStats();   
+    }
+    
+    $query = $this->db->mod_catcher_player2tournament()->where("subteam_id",$data["team_id"])->order("count_score DESC")->limit(3);
+    $i=3;
+    foreach($query as $value){
+      $this->db->mod_catcher_player2tournament()->where("id",$value["id"])->update(array("order_score"=>$i));
+      $i--;
+    }
+    
+    $i=3;  
+    $query = $this->db->mod_catcher_player2tournament()->where("subteam_id",$data["team_id"])->order("count_assist DESC")->limit(3);
+    foreach($query as $value){
+      $this->db->mod_catcher_player2tournament()->where("id",$value["id"])->update(array("order_assist"=>$i));
+      $i--;
+    }
+  }
+}
+?>

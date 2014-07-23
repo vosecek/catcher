@@ -1,0 +1,52 @@
+// The following two lines import the default Sencha Touch theme. If you are building
+// a new theme, remove them and the add your own CSS on top of the base CSS (which
+// is already included in your app.json file).
+@import 'sencha-touch/default';
+@import 'sencha-touch/default/all';
+
+// Custom code goes here..
+
+// styl
+// $base-gradient : "matte";
+// $include-default-icons: false;
+
+// You may remove any of the following modules that you
+// do not use in order to create a smaller css file.
+// @include sencha-panel;
+// @include sencha-buttons;
+// @include sencha-sheet;
+// @include sencha-picker;
+// @include sencha-tabs;
+// @include sencha-toolbar;
+// @include sencha-toolbar-forms;
+// @include sencha-indexbar;
+// @include sencha-list;
+// @include sencha-layout;
+// @include sencha-form;
+// @include sencha-msgbox;
+
+// nepoužívané
+//@include sencha-carousel;
+
+// Your custom code goes here...
+
+// ikony
+@include icon("calendar2","n");
+@include icon("address_book","g");
+@include icon("power_on","Q");
+@include icon("user_add","+");
+@include icon("check2","3");
+@include icon("help","?");
+@include icon("close","R");
+@include icon("find","s");
+@include icon("eye","E");
+
+// tlačítka
+@include sencha-button-ui('home', #B1CEDE , 'matte');
+@include sencha-button-ui('away', #DEC1B1 , 'matte');
+
+@import "compass/css3";
+@include font-face("Digital-7", font-files("digital-7.ttf", "digital-7.otf"));
+
+.x-mask-message {color:#FFFFFF !important;}
+.x-form-fieldset{margin:.25em .25em .25em .25em;}

@@ -1,0 +1,10 @@
+<?
+$path_lib="../../../../../system/lib/";
+$path_mod="../../../../../system/mod/";
+$path_conf="../../../conf/";
+$path_imgs="http://shared.systemanimato.cz/imgs_system/";
+$path_files="../../../files/";
+$path_files_public="files/";
+$path_ftp="../../../ftp/";
+$path_html="../../../html/";
+?>
