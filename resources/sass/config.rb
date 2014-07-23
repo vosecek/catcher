@@ -7,7 +7,8 @@ load File.join(dir, '..', '..', 'touch', 'resources', 'themes')
 # Compass configurations
 sass_path = dir
 css_path = File.join(dir, "..", "css")
-http_path = "/catcher/" 
+
+relative_assets = true 
 
 # Require any additional compass plugins here.
 images_dir = File.join(dir, "..", "images")

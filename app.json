@@ -99,9 +99,11 @@
      * Extra resources to be copied along when build
      */
     "resources": [
-        "resources/images",
+//         "resources/images",
         "resources/icons",
-        "resources/startup"
+//         "resources/startup",
+        "resources/loading",
+        "resources/sass/stylesheets"
     ],
 
     /**

@@ -18,6 +18,9 @@ Ext.Loader.addClassPathMappings({
   "Ext.device.sqlite.SQLTransaction": "touch/src/device/sqlite/Sencha.js",
   "Ext.ux.field.DateTimePicker": "touch/src/ux/DateTimePicker.js",
   "PointView": "app/controller/MatchController.js",
+  "SpiritInspector": "app/controller/Spirit.js",
+  "SpiritRanking": "app/controller/Spirit.js",
+  "SpiritView": "app/controller/Spirit.js",
   "catcher": "app"
 });
 Ext.ClassManager.addNameAlternateMappings({
@@ -649,9 +652,14 @@ Ext.ClassManager.addNameAlternateMappings({
     "Ext.viewport.WP"
   ],
   "PointView": [],
+  "SpiritInspector": [],
+  "SpiritRanking": [],
+  "SpiritView": [],
+  "catcher.controller.Admin": [],
   "catcher.controller.Evidence": [],
   "catcher.controller.Login": [],
   "catcher.controller.MatchController": [],
+  "catcher.controller.Spirit": [],
   "catcher.model.Evidence": [],
   "catcher.model.Match": [],
   "catcher.model.Player": [],
@@ -660,6 +668,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "catcher.model.Session": [],
   "catcher.model.Team": [],
   "catcher.model.Tournament": [],
+  "catcher.model.Users": [],
   "catcher.store.Evidence": [],
   "catcher.store.MatchPlayerListAssist": [],
   "catcher.store.MatchPlayerListScore": [],
@@ -671,8 +680,10 @@ Ext.ClassManager.addNameAlternateMappings({
   "catcher.store.Session": [],
   "catcher.store.Teams": [],
   "catcher.store.Tournaments": [],
+  "catcher.store.Users": [],
   "catcher.view.About": [],
   "catcher.view.AddPointDetail": [],
+  "catcher.view.Admin": [],
   "catcher.view.EditPointDetail": [],
   "catcher.view.EditorPanel": [],
   "catcher.view.HelpPanel": [],
@@ -688,8 +699,14 @@ Ext.ClassManager.addNameAlternateMappings({
   "catcher.view.MatchesNavigation": [],
   "catcher.view.ModalPanel": [],
   "catcher.view.PlayersDetail": [],
+  "catcher.view.QuickMatchMenu": [],
   "catcher.view.ScoreList": [],
   "catcher.view.SearchBox": [],
+  "catcher.view.SpiritInspector": [],
+  "catcher.view.SpiritList": [],
+  "catcher.view.SpiritNavigation": [],
+  "catcher.view.SpiritRanking": [],
+  "catcher.view.SpiritSheet": [],
   "catcher.view.TeamList": [],
   "catcher.view.TeamRoster": [],
   "catcher.view.Tournament": []
@@ -1418,9 +1435,14 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.viewport.Viewport": [],
   "Ext.viewport.WindowsPhone": [],
   "PointView": [],
+  "SpiritInspector": [],
+  "SpiritRanking": [],
+  "SpiritView": [],
+  "catcher.controller.Admin": [],
   "catcher.controller.Evidence": [],
   "catcher.controller.Login": [],
   "catcher.controller.MatchController": [],
+  "catcher.controller.Spirit": [],
   "catcher.model.Evidence": [],
   "catcher.model.Match": [],
   "catcher.model.Player": [],
@@ -1429,6 +1451,7 @@ Ext.ClassManager.addNameAliasMappings({
   "catcher.model.Session": [],
   "catcher.model.Team": [],
   "catcher.model.Tournament": [],
+  "catcher.model.Users": [],
   "catcher.store.Evidence": [],
   "catcher.store.MatchPlayerListAssist": [],
   "catcher.store.MatchPlayerListScore": [],
@@ -1440,11 +1463,15 @@ Ext.ClassManager.addNameAliasMappings({
   "catcher.store.Session": [],
   "catcher.store.Teams": [],
   "catcher.store.Tournaments": [],
+  "catcher.store.Users": [],
   "catcher.view.About": [
     "widget.aboutPanel"
   ],
   "catcher.view.AddPointDetail": [
     "widget.addPointDetail"
+  ],
+  "catcher.view.Admin": [
+    "widget.adminPanel"
   ],
   "catcher.view.EditPointDetail": [
     "widget.editPointDetail"
@@ -1491,11 +1518,29 @@ Ext.ClassManager.addNameAliasMappings({
   "catcher.view.PlayersDetail": [
     "widget.playersDetail"
   ],
+  "catcher.view.QuickMatchMenu": [
+    "widget.quickMatchMenu"
+  ],
   "catcher.view.ScoreList": [
     "widget.scoreList"
   ],
   "catcher.view.SearchBox": [
     "widget.searchBox"
+  ],
+  "catcher.view.SpiritInspector": [
+    "widget.spiritInspector"
+  ],
+  "catcher.view.SpiritList": [
+    "widget.spiritList"
+  ],
+  "catcher.view.SpiritNavigation": [
+    "widget.spiritNavigation"
+  ],
+  "catcher.view.SpiritRanking": [
+    "widget.spiritRanking"
+  ],
+  "catcher.view.SpiritSheet": [
+    "widget.spiritSheet"
   ],
   "catcher.view.TeamList": [
     "widget.teamList"
